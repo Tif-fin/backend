@@ -16,7 +16,7 @@
 |`middlename`|`string`|**Optional** Middle name |
 |`lastname`|`string`|**Required** Last name|
 |`email`|`string`|**Required** Email|
-|`dob`||`string`|**Required** Date of birth|
+|`dob`|`string`|**Required** Date of birth|
 |`password`|`string`|**Required** Password|
 |`confirmPassword`|`string`|**Required** Confirm Password|
 
