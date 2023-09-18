@@ -11,6 +11,7 @@ const path = require("path");
 const cors = require("cors");
 const { TiffinAccessToken } = require("./routes/middleware/tiffin-api-token");
 const registerRoute= require('./routes/register/register')
+const authRoute = require('./routes/auth/auth')
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
 
@@ -34,6 +35,7 @@ app.get('/',(req,res)=>{
     });
 });
 app.use('/register',registerRoute)
+app.use('/login',authRoute)
 app.use(TiffinAccessToken)
 
 //handle error here 
@@ -45,7 +47,6 @@ app.use((err,req,res,next)=>{
        } catch (error) {
         return res.json({success:false,error})
        }
-       
       }
     next()
 })
@@ -55,6 +56,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING).then(()=>{
     console.log("Connection successful");
 })
 .catch((err)=>{
+    console.log(err);
     console.log("Connection failed");
 });
 

@@ -22,8 +22,24 @@ app.post("/",ValidateRegister,async(req,res,next)=>{
  } catch (error) {
     next(error);
  }
- 
 });
+app.patch('/edit/name',async(req,res,next)=>{
+    try {
+        const {firstname,middlename,lastname} = req.body 
+        const {userId} = req.user 
+        const updateResult = await User.updateOne({_id:userId},{
+            firstname,middlename,lastname
+        })
+        if(updateResult){
+            return res.status(200).json({success:true,message:"Updated name successfully"});
+        }else{
+            return res.status(200).json({success:false,message:"Failed to update name"});
+        }
+    } catch (error) {
+        next(error)
+    }
+
+})
 
 
 module.exports = app 
