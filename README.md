@@ -1,6 +1,11 @@
 
 ## API Reference
 
+##### Deployed BASE_URL 
+```http
+    https://tiffin-xoui.onrender.com
+```
+
 #### Register user 
 
 ```http
