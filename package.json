@@ -10,6 +10,9 @@
   "keywords": [
     "tiffin"
   ],
+  "engines": {
+    "node": ">=14.20.1"
+  },
   "author": "Safal Shrestha",
   "license": "ISC",
   "dependencies": {
