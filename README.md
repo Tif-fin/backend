@@ -107,3 +107,47 @@
 }
 ```
 
+### Update user information 
+To update anything in the DB you must be authenticated user. 
+If you are not sending cookies then send jwt through headers.
+
+
+```code
+headers:{
+    'authorization':'Bearer token',
+    ...
+}
+
+```
+### Update name 
+```http
+  PATCH /user/edit/name
+```
+
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `tiffin-api-key` | `string` | **Required**. (Set in headers) Your API key |
+|`firstname`|`string`|**Required** First name|
+|`middlename`|`string`|**Optional** Middle name|
+|`lastname`|`string`|**Required** Last name|
+
+### Update Profile / Upload Profile  
+```http
+  PATCH /user/edit/profile 
+```
+
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `tiffin-api-key` | `string` | **Required**. (Set in headers) Your API key |
+|`profile`|`file`|**Required** Image| 
+
+```code
+headers:{
+    'Content-Type':'application/form-data',
+    ...
+}
+```
+
+***Note:***   *Allowed mime type   `image/jpg`, `image/jpeg`,   `image/png`, `image/gif`*

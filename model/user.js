@@ -11,8 +11,9 @@ const UserSchema = new mongoose.Schema({
     email:{type:String,require:true,unique:true},
     emailVerified:{type:Boolean,default:false},
     dob:{type:Date,require:true},
+    profile:{type:String,require:false,default:null},
     password:{type:String},
-    userType:{type:String,enum:[USERTYPE.COSTUMER,USERTYPE.DEFAULT,USERTYPE.EMPLOYEE,USERTYPE.MERCHANT,
+    role:{type:String,enum:[USERTYPE.COSTUMER,USERTYPE.DEFAULT,USERTYPE.EMPLOYEE,USERTYPE.MERCHANT,
         USERTYPE.SUPEREMPLOYEE,USERTYPE.SUPERUSER
     ],default:USERTYPE.DEFAULT},
     address:{

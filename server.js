@@ -11,7 +11,10 @@ const path = require("path");
 const cors = require("cors");
 const { TiffinAccessToken } = require("./routes/middleware/tiffin-api-token");
 const registerRoute= require('./routes/register/register')
-const authRoute = require('./routes/auth/auth')
+const authRoute = require('./routes/auth/auth');
+const userRoute = require('./routes/user/user');
+const { AuthenticationToken } = require("./routes/middleware/authToken");
+const User = require("./model/user");
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
 
@@ -29,22 +32,30 @@ app.use(cookieParser());
 
 
 //handle routes here 
-app.get('/',(req,res)=>{
-    return req.json({
-        success:true
+app.use(TiffinAccessToken)
+app.get('/',AuthenticationToken,async(req,res)=>{
+    const {userId,email} = req 
+    const user = await  User.findOne({email})
+    console.log(user);
+    return res.json({
+        success:true,
+        user
     });
 });
+app.use('/user',userRoute)
 app.use('/register',registerRoute)
 app.use('/login',authRoute)
-app.use(TiffinAccessToken)
+
 
 //handle error here 
 app.use((err,req,res,next)=>{
     if(err){
        try {
+        console.log(err);
         const message = JSON.parse(err.message)
         return res.status(message.statusCode).json(message)
        } catch (error) {
+        console.log(error);
         return res.json({success:false,error})
        }
       }

@@ -1,15 +1,15 @@
-const PasswordReset = require("../../models/passwordResetModel")
-const { generateCode } = require("../../common/utils")
+const PasswordReset = require("../../model/passwordResetModel")
+const { generateCode } = require("../../utils/const")
 const { sendPasswordResetCodeMail } = require("../mail/sendMail")
 
 
-const PasswordResetService = async(isEmail,user)=>{   
+const passwordResetService = async(isEmail,user)=>{   
     try {
          //generate code 
         let genCode = generateCode(6)
          await PasswordReset({
             userId:user,
-            resetThrough:isEmail?"email":"username",
+            resetThrough:isEmail?"email":"phonenumber",
             resetCode:genCode
         }).save()
         await sendPasswordResetCodeMail(user.email,user.firstname,genCode)
@@ -18,5 +18,5 @@ const PasswordResetService = async(isEmail,user)=>{
         return  Promise.reject(false)
     }
 }
-module.exports = {PasswordResetService}
+module.exports = {passwordResetService}
 

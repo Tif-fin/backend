@@ -7,18 +7,17 @@ const User = require("../../model/user")
 const { comparePassword } = require("../../utils/const")
 const AuthValidator = require("./validate-auth")
 
-
 app.post("/",AuthValidator,async(req,res,next)=>{
-     const {email,password} = req.body
+     const {email,password} = req.body;
      try {
-        let currentUser = await User.findOne({email})
+        let currentUser = await User.findOne({email});
         if(!currentUser) {
             res.status(200).json({success:false,isLogin:false,message:"Invalid credentials"})
-            return
+            return;
         }
         if(await comparePassword(password,currentUser.password)){
-            let token = generateAuthToken({userId:currentUser._id,username:currentUser.username,
-               email:currentUser.email,role:currentUser.role})
+            let token = generateAuthToken({userId:currentUser._id,
+               email:currentUser.email,role:currentUser.role});
                 const cookieOptions = {
                 expires: new Date(Date.now() + 1000 * 60 * 60 * 24), 
                 httpOnly: true, // prevents JavaScript from accessing the cookie
@@ -34,11 +33,10 @@ app.post("/",AuthValidator,async(req,res,next)=>{
            return res.status(200).json({success:false,isLogin:false,message:"Invalid credentials"})
         }
      } catch (err) {
-        console.log(err);
         next(err)
      }
     
-})
+});
 
 
 module.exports = app 

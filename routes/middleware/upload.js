@@ -82,7 +82,7 @@ const compressAndReturnUrlMiddleware =async (req,res,next)=>{
     req.uploadedUrl = url 
     next()
     } catch (error) {
-        res.status(500).json({success:false,messagee:"Internal server error"})
+        res.status(500).json({success:false,message:"Internal server error"})
     }
 }
 module.exports = {compressAndReturnUrlMiddleware,uploadProfile,uploadProductMedia,uploadStoreLogo}
