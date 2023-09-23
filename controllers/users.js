@@ -10,7 +10,7 @@ exports.createUser = async(req,res,next)=>{
     try {
        let {user} = req
        user.password = await encryptPassword(user.password)
-        const result = await new  User(user).save()
+        const result = await new  User({...user,meta:req.meta}).save()
         if(result){
            const code = generateCode(6)
            const emailVerifier = await new EmailVerifier({userId: result,code}).save()

@@ -13,6 +13,13 @@ const UserSchema = new mongoose.Schema({
     dob:{type:Date,require:true},
     profile:{type:String,require:false,default:null},
     password:{type:String},
+    meta:{
+        type:Object,
+        properties:{
+            ipaddress:{type:String},
+            userAgent:{type:String}
+        }
+    },
     role:{type:String,enum:[USERTYPE.COSTUMER,USERTYPE.DEFAULT,USERTYPE.EMPLOYEE,USERTYPE.MERCHANT,
         USERTYPE.SUPEREMPLOYEE,USERTYPE.SUPERUSER
     ],default:USERTYPE.DEFAULT},

@@ -40,14 +40,10 @@ app.use(cookieParser());
 //handle routes here 
 app.use(ipAddress)
 app.use(TiffinAccessToken)
-app.get('/',AuthenticationToken,async(req,res)=>{
-    const {userId,email} = req 
-    const user = await  User.findOne({email})
-    console.log(user);
+app.get('/',async(req,res)=>{
     return res.json({
         success:true,
-        user,
-        ipaddress:req.ipAddress
+        meta:req.meta
     });
 });
 app.use('/user',userRoute)

@@ -1,11 +1,12 @@
 
 exports.ipAddress = (req,res,next)=>{
-    console.log(req);
     const ip = req.headers['x-real-ip']
+    ||req.headers['true-client-ip']
     || req.headers['x-forwarded-for']
-    ||req.headers['cf-connecting']
+    ||req.headers['cf-connecting-ip']
     || req.socket.remoteAddress
     ||'';
-    req.ipAddress = ip;
+    const userAgent = req.headers['user-agent']||"";
+    req.meta = {ipaddress:ip,userAgent};
     next()
 }
