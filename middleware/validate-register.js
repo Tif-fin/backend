@@ -1,6 +1,6 @@
-const { isEmpty, isEqual, passwordStrengthChecker, emailValidator } = require("../../utils/const")
-const ValidationError = require('../../exception/ValidateError')
-const User = require("../../model/user")
+const { isEmpty, isEqual, passwordStrengthChecker, emailValidator } = require("../utils/const")
+const ValidationError = require('../exception/ValidateError')
+const User = require("../model/user")
 const ValidateRegister = async(req,res,next)=>{
     const {phoneNumber,country_code,
         firstname,middlename,lastname,

@@ -1,8 +1,8 @@
 // for handling multipart/form-data (for uploading files)
 const multer = require("multer");
 const fs = require("fs");
-const { generateHash } = require("../../utils/const");
-const { compressImageAndSave } = require("../../utils/compress");
+const { generateHash } = require("../utils/const");
+const { compressImageAndSave } = require("../utils/compress");
 const rootDir = 'assets';
 
 const allowedMimeTypeMedia = [

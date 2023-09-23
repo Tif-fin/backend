@@ -1,4 +1,4 @@
-const { isEmpty } = require("../../utils/const")
+const { isEmpty } = require("../utils/const")
 const TiffinAccessToken = (req,res,next)=>{
     const token = req.headers['tiffin-api-key']
     if(isEmpty(token)){

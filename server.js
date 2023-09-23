@@ -1,23 +1,28 @@
 const dotenv = require("dotenv");
-dotenv.config();
+dotenv.config({
+    path:'./config/config.env'
+});
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const cluster = require("cluster");
 const  os = require("node:os");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
-const { TiffinAccessToken } = require("./routes/middleware/tiffin-api-token");
+const { TiffinAccessToken } = require("./middleware/tiffin-api-token");
 const registerRoute= require('./routes/register/register')
 const authRoute = require('./routes/auth/auth');
 const userRoute = require('./routes/user/user');
-const { AuthenticationToken } = require("./routes/middleware/authToken");
+const { AuthenticationToken } = require("./middleware/authToken");
 const User = require("./model/user");
+const connectDB = require("./config/db.connect");
+const ValidationError = require("./exception/ValidateError");
+const { stat } = require("fs/promises");
+const { ipAddress } = require("./middleware/ip-address");
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
-
+connectDB();
 // Middleware 
 app.use('*',cors({
     origin:true,
@@ -31,7 +36,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+
 //handle routes here 
+app.use(ipAddress)
 app.use(TiffinAccessToken)
 app.get('/',AuthenticationToken,async(req,res)=>{
     const {userId,email} = req 
@@ -39,7 +46,8 @@ app.get('/',AuthenticationToken,async(req,res)=>{
     console.log(user);
     return res.json({
         success:true,
-        user
+        user,
+        ipaddress:req.ipAddress
     });
 });
 app.use('/user',userRoute)
@@ -50,26 +58,22 @@ app.use('/login',authRoute)
 //handle error here 
 app.use((err,req,res,next)=>{
     if(err){
-       try {
-        console.log(err);
-        const message = JSON.parse(err.message)
-        return res.status(message.statusCode).json(message)
-       } catch (error) {
-        console.log(error);
-        return res.json({success:false,error})
-       }
+        let statusCode = err.statusCode||500;
+        let message = 'Internal Server Error';
+        if(err instanceof SyntaxError){
+            statusCode = 400;
+            message = 'Bad Request: Invalid JSON';
+        }else if(err instanceof ValidationError){
+            const json = JSON.parse(err.message)
+            statusCode = json.statusCode
+            message = json.message
+            
+        }
+        return res.status(statusCode).json({success:false,error:message})
       }
     next()
 })
 
-//connection to the mongodb
-mongoose.connect(process.env.MONGO_CONNECTION_STRING).then(()=>{
-    console.log("Connection successful");
-})
-.catch((err)=>{
-    console.log(err);
-    console.log("Connection failed");
-});
 
 // start the primary process 
 if(cluster.isPrimary){

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const { isEmpty } = require("../../utils/const")
+const { isEmpty } = require("../utils/const")
 
 // generate webtoken 
 const generateAuthToken = (user,expireIn='48h')=>jwt.sign(user,process.env.SECRET_KEY, { expiresIn: expireIn})

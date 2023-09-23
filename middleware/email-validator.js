@@ -1,4 +1,4 @@
-const { isEmpty, emailValidator } = require("../../utils/const")
+const { isEmpty, emailValidator } = require("../utils/const")
 
 const EmailValidator = (req,res,next)=>{
     const {email} = req 
