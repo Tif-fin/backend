@@ -62,9 +62,9 @@ app.use((err,req,res,next)=>{
         }else if(err instanceof ValidationError){
             const json = JSON.parse(err.message)
             statusCode = json.statusCode
-            message = json.message
-            
+            message = json.errors||json.error  
         }
+        console.log(err);
         return res.status(statusCode).json({success:false,error:message})
       }
     next()

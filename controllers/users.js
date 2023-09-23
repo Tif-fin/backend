@@ -2,9 +2,10 @@ const ValidationError = require("../exception/ValidateError")
 const User = require("../model/user")
 const { generateAuthToken } = require("../middleware/authToken")
 const { checkExistsAndDelete } = require("../utils/compress")
-const { encryptPassword, comparePassword } = require("../utils/const")
+const { encryptPassword, comparePassword, generateCode } = require("../utils/const")
 const { removeAttribute } = require("../utils/user.hide.secrete")
-
+ const EmailVerifier = require("../model/emailVerifierModel")
+const { sendVerificationMail } = require("../services/mail/sendMail")
 //Create user 
 exports.createUser = async(req,res,next)=>{
     try {
@@ -21,6 +22,7 @@ exports.createUser = async(req,res,next)=>{
            return res.status(200).json({success:false,error:"Failed to create user"})
         }
     } catch (error) {
+       
        next(error);
     }
 }
