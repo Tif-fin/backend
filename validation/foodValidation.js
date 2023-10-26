@@ -14,7 +14,7 @@ const foodSchema = Joi.object({
 });
 
 module.exports = {
-  validateCreate: (data) => {
+  validate: (data) => {
     const { error, value } = foodSchema.validate(data);
     if (error) {
       throw new Error(error.details[0].message);

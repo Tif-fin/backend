@@ -2,10 +2,10 @@ const Joi = require('joi');
 const { SIZE, SUBSCRIPTIONLEVEL, SUBSCRIPTIONMODEL } = require('../utils/const');
 
 
-const FSPSchema = Joi.object({
+const fspSchema = Joi.object({
   created_date: Joi.date(),
   name: Joi.string().trim().required(),
-  merchant: Joi.string().required(),
+  merchantId: Joi.string().required(),
   description: Joi.string().required(),
   logo: Joi.string(),
   size: Joi.string().valid(SIZE.Large, SIZE.Medium, SIZE.Small).default(SIZE.Small),
@@ -75,4 +75,12 @@ const FSPSchema = Joi.object({
   meta: Joi.object(),
 });
 
-module.exports = FSPSchema;
+module.exports = {
+    validate:(data)=>{
+        const { error, value } = fspSchema.validate(data);
+        if (error) {
+          throw new Error(error.details[0].message);
+        }
+        return value;
+    }
+};

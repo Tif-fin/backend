@@ -11,9 +11,9 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
 const { TiffinAccessToken } = require("./middleware/tiffin-api-token");
-const registerRoute= require('./routes/register')
 const userRoute = require('./routes/user');
 const fspRoute = require("./routes/fsp");
+const categoryRoute = require("./routes/category");
 const menuRoute = require("./routes/food");
 const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
@@ -46,10 +46,11 @@ app.get('/',async(req,res)=>{
     });
 });
 app.use('/user',userRoute);
-app.use('/register',registerRoute);
 app.post('/login',users.authUser);
+app.post("/register",users.createUser);
 app.use('/fsp',fspRoute);
 app.use("/food",menuRoute);
+app.use("/category",categoryRoute)
 
 //handle error here 
 app.use((err,req,res,next)=>{
