@@ -1,9 +1,8 @@
-const ValidateRegister = require("../middleware/validate-register")
 const app = require("express").Router()
-const { createUser } = require("../controllers/users");
+const users = require("../controllers/users");
 
 //register user based on the phone number 
-app.post("/",ValidateRegister,createUser);
+app.post("/",users.createUser);
 
 module.exports = app 
 

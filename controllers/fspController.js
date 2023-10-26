@@ -1,8 +1,4 @@
-
-const fsp = require("../model/fsp")
-
 const fspService = require("../services/fspService")
-const { USERTYPE, SUBSCRIPTIONLEVEL, SUBSCRIPTIONMODEL } = require("../utils/const")
 const { removeAttribute } = require("../utils/user.hide.secrete")
 const fspValidation = require("../validation/fspValidation")
 

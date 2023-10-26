@@ -1,148 +1,127 @@
-const ValidationError = require("../exception/ValidateError")
 const User = require("../model/user")
-const { generateAuthToken } = require("../middleware/authToken")
 const { checkExistsAndDelete } = require("../utils/compress")
-const { encryptPassword, comparePassword, generateCode, SUBSCRIPTIONLEVEL, SUBSCRIPTIONMODEL } = require("../utils/const")
 const { removeAttribute } = require("../utils/user.hide.secrete")
- const EmailVerifier = require("../model/emailVerifierModel")
-const { sendVerificationMail } = require("../services/mail/sendMail")
-const FSP = require("./class/fsp")
-const fsp = require("../model/fsp")
-//Create user 
-exports.createUser = async(req,res,next)=>{
-    try {
-       let {user} = req
-       user.password = await encryptPassword(user.password)
-        const result = await new  User({...user,meta:req.meta}).save()
-        if(result){
-           const code = generateCode(6)
-           const emailVerifier = await new EmailVerifier({userId: result,code}).save()
-           await sendVerificationMail(user.email,user.firstname,code)
-           result.password = undefined; 
-          return res.status(200).json({success:true,user:result,isSendVerificationMail:emailVerifier!=null?true:false})
-        }else{
-           return res.status(200).json({success:false,error:"Failed to create user"})
-        }
-    } catch (error) {
-       next(error);
-    }
-}
-//Authenticate user 
-exports.authUser = async(req,res,next)=>{
-    const {email,password} = req.body;
-    try {
-       let currentUser = await User.findOne({email});
-       if(!currentUser) {
-           res.status(200).json({success:false,isLogin:false,message:"Invalid credentials"})
-           return;
-       }
-       if(await comparePassword(password,currentUser.password)){
-           let token = generateAuthToken({userId:currentUser._id,
-              email:currentUser.email,role:currentUser.role});
-               const cookieOptions = {
-               expires: new Date(Date.now() + 1000 * 60 * 60 * 24), 
-               httpOnly: true, // prevents JavaScript from accessing the cookie
-               secure:true,
-               sameSite: "none",
-             }; 
-           currentUser.password = undefined
-           res.cookie('token',token,cookieOptions)
-           res.setHeader('Access-Control-Allow-Credentials',true)
-           res.status(200).json({success:true,isLogin:true,message:"Successully logged in",token,user:currentUser})
-           res.end()
-       }else{
-          return res.status(200).json({success:false,isLogin:false,message:"Invalid credentials"})
-       }
-    } catch (err) {
-       next(err)
-    }
-}
-//Edit Name of the user  if exists 
-exports.editName =async (req,res,next)=>{
-        try {
-            const {firstname,middlename,lastname} = req.body 
-            const {userId} = req.user 
-            const updateResult = await User.updateOne({_id:userId},{
-                firstname,middlename,lastname
-            })
-            if(updateResult){
-                return res.status(200).json({success:true,message:"Updated name successfully"});
-            }else{
-                return res.status(200).json({success:false,message:"Failed to update name"});
-            }
+const userValidation = require("../validation/user/userValidation")
+const userService = require("../services/userService")
+const authValidation = require("../validation/authValidation")
+const nameValidation = require("../validation/user/name.validation")
+
+
+
+
+class UserController {
+    //create a new user 
+    async createUser(req,res){
+   try {
+        //validate data
+        let data = userValidation.validate(req.body)
+        //create a new user 
+        const newUser = userService.createUser(data)
+        return res.status(200).json({success:true,data:newUser})
         } catch (error) {
-            next(error)
+            res.status(400).json({status:false, error: error.message });
         }
-}
-//Update profile 
-exports.editProfile = async(req,res,next)=>{
-    const {uploadedUrl} = req 
-    const {userId} = req.user 
-    try {
-        const result = await User.updateOne({_id:userId},{
-            profile:uploadedUrl[0]
-        })
-        if(result){
-            return res.status(200).json({
-                success:true,
-                message:"Success",
-                profile:uploadedUrl[0],
-            })
-        }else{
-            checkExistsAndDelete(uploadedUrl[0])
-            return res.status(200).json({
-                success:false,
-                error:"Failed to upload profile"
-            })
+    }
+    //Authenticate user 
+    async authUser(req,res){
+        try {
+            //validate data
+            const data= authValidation.validate(req.body)
+            //authenticate user
+            const result = await userService.auth({...data})
+            const cookieOptions = {
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24), 
+                    httpOnly: true, // prevents JavaScript from accessing the cookie
+                    secure:true,
+                    sameSite: "none",
+                }; 
+                //set token in the cookie
+                res.cookie('token',result.token,cookieOptions)
+                res.setHeader('Access-Control-Allow-Credentials',true)
+                res.status(200).json({success:true,data:result})
+                res.end()
+          
+         } catch (error) {
+            res.status(400).json({status:false, error: error.message });
+         }
+    }
+    //edit user name
+    async editName  (req,res){
+        try {
+            //validate name
+            const data = nameValidation.validate(req.body)
+            const {userId} = req.user 
+            //update name
+            await userService.updateById(data,userId)
+            return res.status(200).json({success:true,message:"Updated name successfully"});
+        } catch (error) {
+            res.status(400).json({status:false, error: error.message });
         }
-      
-    } catch (error) {
-        checkExistsAndDelete(uploadedUrl[0])
-        next(error)
     }
+    //edit profile 
+       async editProfile (req,res,next){
+            try {
+                const {uploadedUrl} = req 
+                const {userId} = req.user 
+                //update 
+                await userService.updateById({ profile:uploadedUrl[0]},userId)
+                return res.status(200).json({success:true,profile:uploadedUrl[0]})
+            } catch (error) {
+                //delete the uploaded image if and only if the image exists
+                checkExistsAndDelete(uploadedUrl[0])
+                res.status(400).json({status:false, error: error.message });
+            }
+        }
+
+        async sendVerificationCode (req,res,next){
+            const {email} = req 
+            try {
+                const user =await User.findOne({email});
+                const result=  await passwordResetService(true,user)
+                return res.status(200).json({
+                    success:result,
+                    message:result?'Verification code is sent':'Failed to sent verification code'
+                })
+            } catch (error) {
+                next(error)
+            }
+        }
+        //get current user 
+      async  getCurrentUser (req,res,next){
+            const {userId} = req.user 
+            try {
+                let user=await userService.getById(userId);
+                user = removeAttribute(Array.of(user),['password','__v','created_date'])
+                return res.status(200).json({success:true,data:user[0]})
+            } catch (error) {
+                res.status(400).json({status:false, error: error.message });
+            }
+        }
+        //get all the registered user 
+        async getUsers  (req,res,next){
+            try {
+                let  users =await userService.getUsers();
+                users = removeAttribute(users,['password','__v','created_date'])
+                return res.status(200).json({success:true,data:users})
+            } catch (error) {
+                res.status(400).json({status:false, error: error.message });
+            }
+        }
+        async getUserById  (req,res,next){
+            const {userId} = req.params    
+            req.user = {userId}
+            this.getCurrentUser(req,res,next)
+        }
+
 }
-//send Verification code 
-exports.sendVerificationCode = async(req,res,next)=>{
-    const {email} = req 
-    try {
-        const user =await User.findOne({email});
-        const result=  await passwordResetService(true,user)
-        return res.status(200).json({
-            success:result,
-            message:result?'Verification code is sent':'Failed to sent verification code'
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-exports.getCurrentUser = async(req,res,next)=>{
-    const {userId} = req.user 
-    try {
-        let user=await User.findOne({_id:userId});
-        user = removeAttribute(Array.of(user),['password','__v','created_date'])
-        return res.status(200).json({
-            success:true,
-            user:user[0]
-        })
-    } catch (error) {
-        next(new ValidationError(JSON.stringify({success:false,statusCode:422,error:"Invalid user Id"})))
-    }
-}
-exports.getUsers  = async(req,res,next)=>{
-    try {
-        let  users =await User.find({});
-        users = removeAttribute(users,['password','__v','created_date'])
-        return res.status(200).json({
-            success:true,
-            total:users.length,
-            users
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-exports.getUserById  = async(req,res,next)=>{
-    const {userId} = req.params    
-    req.user = {userId}
-   this.getCurrentUser(req,res,next)
-}
+
+module.exports = new UserController();
+
+
+
+
+
+
+
+
+

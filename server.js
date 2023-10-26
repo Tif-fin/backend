@@ -12,13 +12,13 @@ const path = require("path");
 const cors = require("cors");
 const { TiffinAccessToken } = require("./middleware/tiffin-api-token");
 const registerRoute= require('./routes/register')
-const authRoute = require('./routes/auth/auth');
 const userRoute = require('./routes/user');
 const fspRoute = require("./routes/fsp");
 const menuRoute = require("./routes/food");
 const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
 const { ipAddress } = require("./middleware/ip-address");
+const users = require("./controllers/users");
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
 connectDB();
@@ -47,7 +47,7 @@ app.get('/',async(req,res)=>{
 });
 app.use('/user',userRoute);
 app.use('/register',registerRoute);
-app.use('/login',authRoute);
+app.post('/login',users.authUser);
 app.use('/fsp',fspRoute);
 app.use("/food",menuRoute);
 
