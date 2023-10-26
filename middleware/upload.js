@@ -69,7 +69,7 @@ limits:{
 const compressAndReturnUrlMiddleware =async (req,res,next)=>{
     try {
     let files = req.file || req.files
-    console.log(files);
+    console.log(req);
     let url = []
     if(!files instanceof Array ||!Array.isArray(files)){
         files =[files]

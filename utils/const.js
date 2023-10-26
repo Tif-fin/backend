@@ -18,6 +18,11 @@ const SUBSCRIPTIONLEVEL = {
     Medium:"Medium",
     Premium:"Premium"
 };
+const SIZE = {
+    Large:"Large",
+    Medium:"Medium",
+    Small:"Small"
+}
 
 const emailValidator= (email)=>email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
 const validateUserName  = (username)=>username.match( /^[a-zA-Z0-9_]{5,29}$/);
@@ -66,5 +71,6 @@ module.exports = {generateHash,
     emailValidator,validateUserName,passwordStrengthChecker,
     isEqual,generateCode,encryptPassword,
     SUBSCRIPTIONLEVEL,
-    SUBSCRIPTIONMODEL
+    SUBSCRIPTIONMODEL,
+    SIZE
 }

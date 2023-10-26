@@ -5,4 +5,5 @@ class ValidationError extends Error{
         this.message = message
       }
 }
+
 module.exports = ValidationError

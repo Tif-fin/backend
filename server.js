@@ -11,14 +11,13 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
 const { TiffinAccessToken } = require("./middleware/tiffin-api-token");
-const registerRoute= require('./routes/register/register')
+const registerRoute= require('./routes/register')
 const authRoute = require('./routes/auth/auth');
-const userRoute = require('./routes/user/user');
-const { AuthenticationToken } = require("./middleware/authToken");
-const User = require("./model/user");
+const userRoute = require('./routes/user');
+const fspRoute = require("./routes/fsp");
+const menuRoute = require("./routes/food");
 const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
-const { stat } = require("fs/promises");
 const { ipAddress } = require("./middleware/ip-address");
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
@@ -38,18 +37,19 @@ app.use(cookieParser());
 
 
 //handle routes here 
-app.use(ipAddress)
-app.use(TiffinAccessToken)
+app.use(ipAddress);
+//app.use(TiffinAccessToken);
 app.get('/',async(req,res)=>{
     return res.json({
         success:true,
         meta:req.meta
     });
 });
-app.use('/user',userRoute)
-app.use('/register',registerRoute)
-app.use('/login',authRoute)
-
+app.use('/user',userRoute);
+app.use('/register',registerRoute);
+app.use('/login',authRoute);
+app.use('/fsp',fspRoute);
+app.use("/food",menuRoute);
 
 //handle error here 
 app.use((err,req,res,next)=>{
@@ -64,7 +64,6 @@ app.use((err,req,res,next)=>{
             statusCode = json.statusCode
             message = json.errors||json.error  
         }
-        console.log(err);
         return res.status(statusCode).json({success:false,error:message})
       }
     next()
