@@ -5,10 +5,6 @@ const userValidation = require("../validation/user/userValidation")
 const userService = require("../services/userService")
 const authValidation = require("../validation/authValidation")
 const nameValidation = require("../validation/user/name.validation")
-
-
-
-
 class UserController {
     //create a new user 
     async createUser(req,res){
@@ -16,9 +12,10 @@ class UserController {
         //validate data
         let data = userValidation.validate(req.body)
         //create a new user 
-        const newUser = userService.createUser(data)
+        const newUser = await userService.createUser(data)
         return res.status(200).json({success:true,data:newUser})
         } catch (error) {
+            
             res.status(400).json({status:false, error: error.message });
         }
     }

@@ -1,16 +1,18 @@
-const { sendVerificationCode } = require("../controllers/users");
 const { generateAuthToken } = require("../middleware/authToken");
 const emailVerifierModel = require("../model/emailVerifierModel");
 const user = require("../model/user");
-const { generateCode, comparePassword } = require("../utils/const");
+const { generateCode, comparePassword, encryptPassword } = require("../utils/const");
 const { sendVerificationMail } = require("./mail/sendMail");
 
 class UserService{
 
 
     async createUser(data){
+        //check existing user 
+        if(await user.findOne({phoneNumber:data.phoneNumber}))throw new Error("Duplicate phone number")
+        if(await user.findOne({email:data.email}))throw new Error("Duplicate email address")
         //encrypt the password 
-        data.password = await encryptPassword(user.password)
+        data.password = await encryptPassword(data.password)
         //save the user 
         const result = await new user(data).save()
         if(result){
@@ -19,7 +21,7 @@ class UserService{
            //store the code 
            const emailVerifier = await new emailVerifierModel({userId: result,code}).save()
            //
-           await sendVerificationMail(user.email,user.firstname,code)
+           await sendVerificationMail(data.email,data.firstname,code)
            result.password = undefined; 
           return ({user:result,isSendVerificationMail:emailVerifier!=null?true:false});
         }else{

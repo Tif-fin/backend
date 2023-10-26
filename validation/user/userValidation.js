@@ -6,14 +6,14 @@ const UserSchema = Joi.object({
   country_code: Joi.string().required(),
   phoneNumber: Joi.string().length(10).required(),
   firstname: Joi.string().required(),
-  middlename: Joi.string().default(''),
+  middlename: Joi.string().allow(''),
   lastname: Joi.string().required(),
   email: Joi.string().email().required(),
   emailVerified: Joi.boolean().default(false),
   dob: Joi.date().required(),
   profile: Joi.string().default(null),
   password: Joi.string().custom((value, helpers) => {
-    if (passwordStrengthChecker(password)!==2) {
+    if (passwordStrengthChecker(value)!==2) {
       return helpers.message('Password is too weak. Please choose a stronger password.');
     }
 
