@@ -15,7 +15,7 @@ class CategoryService{
         return result
     }
     async createFoodType(data){
-       
+        
         //check user privilege data.createdBy
         if(await FoodType.findOne({type:data.type}))
         throw new Error("Already exists")
@@ -24,7 +24,12 @@ class CategoryService{
         if(!result)throw new Error("Failed to food type");
         return result
     }
-
+    async getAllCategory(){
+        return await categoryModel.find();
+    }
+    async getAllFoodType(){
+        return await FoodType.find();
+    }
 
 }
 

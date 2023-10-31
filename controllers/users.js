@@ -26,8 +26,9 @@ class UserController {
             const data= authValidation.validate(req.body)
             //authenticate user
             const result = await userService.auth({...data})
+            const expire_at =  new Date(Date.now() + 1000 * 60 * 60 * 24)
             const cookieOptions = {
-                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24), 
+                    expires:expire_at, 
                     httpOnly: true, // prevents JavaScript from accessing the cookie
                     secure:true,
                     sameSite: "none",
@@ -35,7 +36,7 @@ class UserController {
                 //set token in the cookie
                 res.cookie('token',result.token,cookieOptions)
                 res.setHeader('Access-Control-Allow-Credentials',true)
-                res.status(200).json({success:true,data:result})
+                res.status(200).json({success:true,data:{...result,expire_at}})
                 res.end()
           
          } catch (error) {
@@ -62,7 +63,7 @@ class UserController {
                 const {userId} = req.user 
                 //update 
                 await userService.updateById({ profile:uploadedUrl[0]},userId)
-                return res.status(200).json({success:true,profile:uploadedUrl[0]})
+                return res.status(200).json({success:true,data:{"profile":uploadedUrl[0]}})
             } catch (error) {
                 //delete the uploaded image if and only if the image exists
                 checkExistsAndDelete(uploadedUrl[0])

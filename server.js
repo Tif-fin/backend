@@ -45,6 +45,7 @@ app.get('/',async(req,res)=>{
         meta:req.meta
     });
 });
+
 app.use('/user',userRoute);
 app.post('/login',users.authUser);
 app.post("/register",users.createUser);
@@ -55,8 +56,9 @@ app.use("/category",categoryRoute)
 //handle error here 
 app.use((err,req,res,next)=>{
     if(err){
+    
         let statusCode = err.statusCode||500;
-        let message = 'Internal Server Error';
+        let message = err.message||'Internal Server Error';
         if(err instanceof SyntaxError){
             statusCode = 400;
             message = 'Bad Request: Invalid JSON';

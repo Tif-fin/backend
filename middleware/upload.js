@@ -9,9 +9,8 @@ const allowedMimeTypeMedia = [
     "image/jpg","image/jpeg","image/png","image/gif",
     "video/mp4","video/avi"
 ];
-const allowedMimeType = [
-    "image/jpg","image/jpeg","image/png","image/gif"
-];
+
+const allowedExtensions = ['jpg', 'png', 'gif'];
 
 if(!fs.existsSync(rootDir)) fs.mkdirSync(rootDir);
 const extension = (mimeType)=> mimeType.split('/')[1];
@@ -40,7 +39,7 @@ let storage =(directory)=> multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         let {username} = req.user
-        if(!allowedMimeType.includes(file.mimetype)) {
+        if(!allowedExtensions.includes(file.originalname.split('.').pop())) {
            return cb(new Error("File extension not allowed"));
         }
         let filename = `${generateHash(username)}.${extension(file.mimetype)}`;
@@ -69,7 +68,7 @@ limits:{
 const compressAndReturnUrlMiddleware =async (req,res,next)=>{
     try {
     let files = req.file || req.files
-    console.log(req);
+    if(!files)return res.status(422).json({success:false,error:"Please select file"})
     let url = []
     if(!files instanceof Array ||!Array.isArray(files)){
         files =[files]
@@ -82,7 +81,8 @@ const compressAndReturnUrlMiddleware =async (req,res,next)=>{
     req.uploadedUrl = url 
     next()
     } catch (error) {
-        res.status(500).json({success:false,message:"Internal server error"})
+        console.log(error);
+        res.status(500).json({success:false,error:"Internal server error"})
     }
 }
 module.exports = {compressAndReturnUrlMiddleware,uploadProfile,uploadProductMedia,uploadStoreLogo}
