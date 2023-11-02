@@ -10,7 +10,7 @@ const allowedMimeTypeMedia = [
     "video/mp4","video/avi"
 ];
 
-const allowedExtensions = ['jpg', 'png', 'gif'];
+const allowedExtensions = ['jpg', 'png', 'gif','jpeg'];
 
 if(!fs.existsSync(rootDir)) fs.mkdirSync(rootDir);
 const extension = (mimeType)=> mimeType.split('/')[1];
@@ -62,7 +62,7 @@ const uploadProductMedia = multer({storage:storageMedia("images/media"),
 limits:{
     files:7,
 }
-}).array('foods');
+}).array('media');
 
 //compress the image and return the url of the compressed image 
 const compressAndReturnUrlMiddleware =async (req,res,next)=>{

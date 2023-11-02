@@ -33,6 +33,19 @@ class FSPController {
             res.status(400).json({status:false, error: error.message });
         }
     }
+    async getCurrentUserFSP(req,res,next){
+        try {
+            const {userId} = req.user 
+            let fsps = await fspService.getByMerchantId(userId);
+            fsps = removeAttribute(fsps,['verification_histories',
+            'verification_requests','employees','subscriptions','created_date','meta',
+            'isVerified','isListing'
+        ])
+        return res.status(200).json({success:true,data:fsps})
+        } catch (error) {
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
    
     
 
