@@ -5,6 +5,11 @@ const MediaSchema = mongoose.Schema({
         type:mongoose.Schema.ObjectId,
         ref:"users",
         require:true,
+    },
+    fspId:{
+        type:mongoose.Schema.ObjectId,
+        ref:"fsps",
+        require:true,
 
     },
     name:{

@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const mediaJoiSchema = Joi.object({
+  storeId:Joi.string().required(),
   userId: Joi.string().required(),
   name: Joi.string().trim().required(),
   description: Joi.string().required(),

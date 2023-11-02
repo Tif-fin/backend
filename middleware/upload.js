@@ -23,9 +23,9 @@ let storageMedia =(directory)=> multer.diskStorage({
     },
     filename:(req,file,cb)=>{
         let {username} = req.user
-        if(!allowedMimeTypeMedia.includes(file.mimetype)) {
-           return cb(new Error("File extension not allowed"));
-        }
+        if(!allowedExtensions.includes(file.originalname.split('.').pop())) {
+            return cb(new Error("File extension not allowed"));
+         }
         let filename = `${generateHash(username)}.${extension(file.mimetype)}`;
         cb(null,filename);
     }
