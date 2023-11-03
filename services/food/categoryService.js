@@ -25,15 +25,24 @@ class CategoryService{
         return result
     }
     async getAllCategory(){
-        return await categoryModel.find();
+        return await categoryModel.find().sort({createdAt:-1});
     }
     async getAllCategoryByFSPId(id){
         return await categoryModel.find({
-            fspId:id
-        });
+            fspId:id,
+            
+        }).sort({createdAt:-1});
     }
     async getAllFoodType(){
         return await FoodType.find();
+    }
+
+    async deleteCategoryById(id,userId,fspId){
+        //check here user is authorized or not
+        return await  categoryModel.deleteOne({
+            _id:id,
+            fspId:fspId
+        })
     }
 
 }

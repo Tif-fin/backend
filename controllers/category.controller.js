@@ -52,7 +52,19 @@ class CategoryController{
             res.status(400).json({status:false, error: error.message });
         }
     }
-
+    async deleteCategoryById(req,res){
+        try {
+            const {fspId,_id} = req.body 
+            const {userId} = req.user 
+            const result = await categoryService.deleteCategoryById(_id,userId,fspId);
+            if(!result){
+                throw new Error("Failed to delete category");
+            }
+            res.status(200).json({success:true,message:"Category deleted successfully"})
+        } catch (error) {
+             res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 }
 module.exports = new CategoryController();
