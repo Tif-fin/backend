@@ -8,9 +8,9 @@ class FoodMenuController{
             const {userId} = req.user
             let  data = req.body 
         
-            data = {...data,merchantId:userId}
+            data = {...data,createdBy:userId}
             //validate data 
-            const validatedData = foodValidation.validateCreate(data);
+            const validatedData = foodValidation.validate(data);
             //create a new food menu
             const createdFoodMenu =  await foodService.createFoodMenu(validatedData);
             //response with success 
@@ -35,7 +35,20 @@ class FoodMenuController{
             res.status(400).json({status:false, error: error.message });
         }
     }
-
+    
+    async fetchFoodByGroupCategory(req,res){
+        try {
+            const {fspId} = req.query;
+            const items =  await foodService.getAllFoodByGroupCategoryByFSP(fspId);
+            res.status(201).json({
+                status:true,
+                data: items,
+              });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 
 }

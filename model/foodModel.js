@@ -1,68 +1,60 @@
-// models/foodMenuModel.js
 const mongoose = require('mongoose');
 
-const foodMenuSchema = new mongoose.Schema({
+
+// Define the Mongoose schema
+const foodSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
-    minlength: 3,
+    minlength: 3
   },
-  merchantId: {
-    type: String,
-    required: true,
-    trim: true,
+  description:{
+    type:String,
+    default:"",
   },
-  storeId: {
+  createdBy: {
     type: String,
+    required: true
+  },
+  fspId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"fsps",
     required: true,
-    trim: true,
+    trim: true
   },
   price: {
     mrp: {
       type: Number,
       required: true,
-      min: 0,
+      min: 0
     },
     compareAtPrice: {
       type: Number,
       min: 0,
-    },
+      default: null
+    }
   },
   urls: {
     type: [String],
-    required: true,
     validate: {
       validator: (array) => array.length >= 1,
-      message: 'At least one URL is required',
-    },
+      message: 'At least one URL is required.'
+    }
   },
   classification: {
     type: String,
-    required: true,
     enum: ['veg', 'non-veg'],
+    required: true
   },
-  category: {
-    type: String,
-    required: true,
-  },
-  createdAt:{
-    type:Date,
-    required:true,
-    default:Date.now
-  },
-  rating:{
-    type:Number,
-    default:0
-  },
-  reviews:{
-    type:Number,
-    default:0,
-  },
-  lastUpdated:{
-    type:Date,
-    default:null,
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"category",
+    required: true
   }
 });
 
-module.exports = mongoose.model('foodmenu', foodMenuSchema);
+// Create a Mongoose model based on the schema
+const Food = mongoose.model('Food', foodSchema);
+
+module.exports = Food;

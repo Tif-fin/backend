@@ -26,7 +26,7 @@ class UserController {
             const data= authValidation.validate(req.body)
             //authenticate user
             const result = await userService.auth({...data})
-            const expire_at =  new Date(Date.now() + 1000 * 60 * 60 * 24)
+            const expire_at =  new Date(Date.now() + 1000 * 60 * 60 * 24*2)
             const cookieOptions = {
                     expires:expire_at, 
                     httpOnly: true, // prevents JavaScript from accessing the cookie
