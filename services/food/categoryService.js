@@ -27,6 +27,11 @@ class CategoryService{
     async getAllCategory(){
         return await categoryModel.find();
     }
+    async getAllCategoryByFSPId(id){
+        return await categoryModel.find({
+            fspId:id
+        });
+    }
     async getAllFoodType(){
         return await FoodType.find();
     }

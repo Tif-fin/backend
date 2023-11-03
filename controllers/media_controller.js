@@ -18,6 +18,17 @@ class MediaController {
             
        }
     }
+    //get all the media details belongs to the fspId or all other shared resources 
+    async getAllMedia(req,res){
+        try{
+            const {userId} = req.user 
+            const fspId = req.query.fspId 
+            const result =await mediaService.getAllMedia({userId:userId,fspId:fspId})//fetch from the db
+            return res.status(200).json({success:true,data:result}) 
+        }catch(error){
+            res.status(500).json({success:false,error:error.message})
+        }
+    }
 
 
 }

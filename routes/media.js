@@ -6,6 +6,6 @@ const app = require("express").Router()
 
 
 app.post("/",AuthenticationToken,uploadProductMedia,compressAndReturnUrlMiddleware,media_controller.addMedia);
-
+app.get("/",AuthenticationToken,media_controller.getAllMedia)
 
 module.exports = app;

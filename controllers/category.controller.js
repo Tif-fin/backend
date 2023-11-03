@@ -29,6 +29,15 @@ class CategoryController{
             res.status(400).json({status:false, error: error.message });
         }
     }
+    async getAllCategoryByFSPId(req,res){
+        try {
+            const fspId = req.query.fspId;
+            if(!fspId)throw new Error("Food service provider id is required")
+            res.status(200).json({status:true,data:await categoryService.getAllCategoryByFSPId(fspId)});
+        } catch (error) {
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
     async getAllCategory(req,res){
         try {
             res.status(200).json({status:true,data:await categoryService.getAllCategory()});
