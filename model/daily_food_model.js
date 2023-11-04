@@ -55,10 +55,15 @@ const foodSchema = new mongoose.Schema({
   timestamp:{
     type:Date,
     default:Date.now
+  },
+  isAvailable:{
+    type:Boolean,
+    default:true
   }
 });
 
-// Create a Mongoose model based on the schema
-const Food = mongoose.model('Food', foodSchema);
 
-module.exports = Food;
+// Create a Mongoose model based on the schema
+const DailyFoodMenu = mongoose.model('dailyfoodMenu', foodSchema);
+
+module.exports = DailyFoodMenu;

@@ -23,6 +23,31 @@ class FoodMenuController{
             res.status(400).json({status:false, error: error.message });
         }
     }
+
+    async createMenuForToday(req,res){
+        try {
+           const {userId} = req.user
+            let  data = req.body 
+            data.forEach(element => {
+                //updated createdBy id
+                element.createdBy= userId;
+                delete  element.__v;
+                delete element._id;
+            });
+            const validatedData = foodValidation.validateArray(data)
+              //create a today  food menu
+            const createdFoodMenu =  await foodService.createFoodMenuForToday(validatedData);
+            //response with success 
+            res.status(201).json({
+                status:true,
+                data: createdFoodMenu,
+              });
+        } catch (error) {
+           console.log(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
+
     async fetchAllFoods(req,res){
         try {
             const items =  await foodService.getAllFoodMenus();
@@ -36,6 +61,20 @@ class FoodMenuController{
         }
     }
     
+    async fetchAllTodayFoodsGroupByCategory(req,res){
+        try {
+            const {fspId} = req.query;
+            const items =  await foodService.getAllTodayFoodsGroupByCategory(fspId);
+            res.status(201).json({
+                status:true,
+                data: items,
+              });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
+
     async fetchFoodByGroupCategory(req,res){
         try {
             const {fspId} = req.query;

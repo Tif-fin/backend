@@ -15,6 +15,7 @@ const userRoute = require('./routes/user');
 const fspRoute = require("./routes/fsp");
 const categoryRoute = require("./routes/category");
 const menuRoute = require("./routes/food");
+const rootRoute = require("./routes/root");
 const mediaRoute=require("./routes/media");
 const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
@@ -40,12 +41,7 @@ app.use(cookieParser());
 //handle routes here 
 app.use(ipAddress);
 //app.use(TiffinAccessToken);
-app.get('/',async(req,res)=>{
-    return res.json({
-        success:true,
-        meta:req.meta
-    });
-});
+app.get('/',rootRoute);
 
 app.use('/user',userRoute);
 app.post('/login',users.authUser);
