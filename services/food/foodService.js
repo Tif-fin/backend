@@ -53,19 +53,26 @@ class FoodService{
 
     async getAllFoodMenus() {
         try {
-           
-          const foodMenus = await foodModel.find()
-          .populate({
-            path:'fspId',
-            select:'_id name merchantId logo canDeliver isVerified'
-          }).populate({
-            path:'categoryId',
-            select:"_id name foodTypeId fspId",
-            populate:{
-                path:'foodTypeId',
-                select:'fspId type createdBy'
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1); 
+          const foodMenus = await DailyFoodMenu.find({
+            timestamp:{
+                $gt:today,$lt:tomorrow
             }
           })
+        //  .populate({
+        //    path:'fspId',
+        //    select:'_id name merchantId logo canDeliver isVerified'
+        //  }).populate({
+        //    path:'categoryId',
+        //    select:"_id name foodTypeId fspId",
+        //    populate:{
+        //        path:'foodTypeId',
+        //        select:'fspId type createdBy'
+        //    }
+        //  })
           return foodMenus;
         } catch (error) {
           throw new Error('Failed to fetch food menus');
@@ -181,8 +188,7 @@ class FoodService{
                 
               ];
           
-            const foods = await foodModel.aggregate(aggregationPipeline,{allowDiskUse:true})
-           
+            const foods = await DailyFoodMenu.aggregate(aggregationPipeline,{allowDiskUse:true})
             return foods;
           } catch (error) {
            console.log(error);
@@ -190,6 +196,57 @@ class FoodService{
           }
     }
 
+    async getTodaysFoodsGroupByCategory(){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        try {
+            const aggregationPipeline = [
+               {
+                $match:{
+                    timestamp: { $gt:today,$lt: tomorrow },
+                    isAvailable:true
+                }
+               },
+               {
+               $group: {
+                   _id: '$categoryId',
+                 foodItems: { $push: '$$ROOT' },
+               },
+             },
+             {
+               $lookup: {
+                 from: 'categories', // Replace with your actual collection name
+                 localField: '_id',
+                 foreignField: '_id',
+                as:'category'
+               },
+             },
+                
+                
+              ];
+          
+            const foods = await DailyFoodMenu.aggregate(aggregationPipeline,{allowDiskUse:true})
+            return foods;
+          } catch (error) {
+           console.log(error);
+            throw new Error('Failed to fetch food menus');
+          }
+    }
+    async getFoodById(foodId){
+        return await DailyFoodMenu.findOne({_id:foodId}).populate({
+            path:"fspId",
+            select:"_id name merchantId logo canDeliver isVerified"
+        }).populate({
+            path:'categoryId',
+                select:"_id name foodTypeId fspId",
+                populate:{
+                    path:'foodTypeId',
+                    select:'fspId type createdBy'
+                }
+        });
+    }
 }
 
 module.exports = new FoodService();

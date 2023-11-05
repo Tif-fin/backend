@@ -55,7 +55,15 @@ const foodSchema = new mongoose.Schema({
   timestamp:{
     type:Date,
     default:Date.now
-  }
+  },
+  review:{
+    type:Number,
+    default:0
+  },
+  rating:{
+    type:Number,
+    default:0.0,
+  },
 });
 
 // Create a Mongoose model based on the schema

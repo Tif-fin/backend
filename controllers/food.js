@@ -88,7 +88,19 @@ class FoodMenuController{
             res.status(400).json({status:false, error: error.message });
         }
     }
-
+    async fetchFoodById(req,res){
+        try {
+            const {foodId} = req.query;
+            const items =  await foodService.getFoodById(foodId);
+            res.status(201).json({
+                status:true,
+                data: items,
+              });
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 }
 

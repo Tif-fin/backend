@@ -56,6 +56,14 @@ const foodSchema = new mongoose.Schema({
     type:Date,
     default:Date.now
   },
+  review:{
+    type:Number,
+    default:0
+  },
+  rating:{
+    type:Number,
+    default:0.0,
+  },
   isAvailable:{
     type:Boolean,
     default:true

@@ -1,4 +1,5 @@
 const fsp = require("../model/fsp");
+const { USERTYPE } = require("../utils/const");
 
 // fsp service 
 class FSPService{
@@ -19,7 +20,23 @@ class FSPService{
     async getByMerchantId(id){
         return await fsp.find({merchantId:id});
     }
-
+    async getFSPById(id){
+        return await fsp.findById(id);
+    }
+    async checkPrivilege(userId){
+        //check for merchant 
+        if(await fsp.find({merchantId:userId})){
+            return USERTYPE.MERCHANT; 
+        }
+        return USERTYPE.DEFAULT;
+    }
+    async update(fspId,userId,update){
+            //check priivilege 
+        if(await this.checkPrivilege(userId)!=USERTYPE.MERCHANT){
+            throw new Error("Unauthorized");
+        }
+        return await fsp.updateOne({_id:fspId},update)
+    }
 
 }
 

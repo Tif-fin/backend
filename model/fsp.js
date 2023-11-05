@@ -62,6 +62,14 @@ const FSPSchema = new mongoose.Schema({
             }
         }
     ],
+    review:{
+        type:Number,
+        default:0
+    },
+    rating:{
+        type:Number,
+        default:0.0
+    },
     emails:[],
     status:{type:Boolean,default:false},// is store is currently live or not 
     isListing:{type:Boolean,default:false},// is the store is listing or not in the app || controlled by superuser 
