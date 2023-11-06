@@ -1,8 +1,9 @@
+const fsp = require("../model/fsp")
 const fspService = require("../services/fspService")
 const { USERTYPE } = require("../utils/const")
 const { removeAttribute } = require("../utils/user.hide.secrete")
 const fspValidation = require("../validation/fspValidation")
-
+const haversineDistance = require("../utils/distance")
 
 class FSPController {
 
@@ -147,6 +148,28 @@ class FSPController {
             console.error(error);
             res.status(400).json({status:false, error: error.message });
         }
+    }
+    async getnear(req,res){
+      try {
+        const {user_latitude,user_longitude,maxDistance=15}=req.query;
+        const fsps  =await fsp.find();
+        let  newFsps = fsps.filter((fsp)=>fsp.address!=null);
+        let dFsps = [];
+        for(let index=0;index<newFsps.length;index++){
+            if(newFsps[index].address.geolocation!=null){
+                const {latitude,longitude} = newFsps[index].address.geolocation;
+                const distance = haversineDistance(user_latitude,user_longitude,latitude,longitude);
+               if(maxDistance>=distance)
+                dFsps.push({...newFsps[index]._doc,distance})
+            } 
+        }
+        dFsps = removeAttribute(dFsps,['verification_histories','verification_requests','employees','subscriptions','created_date','meta',])
+        res.status(200).json({success:true,data:dFsps});
+      } catch (error) {
+       
+        res.status(400).json({status:false, error: error.message });
+      }
+
     }
     
 

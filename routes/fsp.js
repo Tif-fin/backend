@@ -14,4 +14,5 @@ app.patch('/logo',AuthenticationToken,uploadStoreLogo,compressAndReturnUrlMiddle
 app.patch('/description',AuthenticationToken,fspController.updateDescription);
 app.patch('/emails',AuthenticationToken,fspController.updateEmail);
 app.patch('/geolocation',AuthenticationToken,fspController.updateGeolocation)
+app.get('/near',fspController.getnear)
 module.exports = app 
