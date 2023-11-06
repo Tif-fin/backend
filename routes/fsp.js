@@ -13,4 +13,5 @@ app.get('/current',AuthenticationToken,fspController.getCurrentUserFSP)
 app.patch('/logo',AuthenticationToken,uploadStoreLogo,compressAndReturnUrlMiddleware,fspController.changeLogo)
 app.patch('/description',AuthenticationToken,fspController.updateDescription);
 app.patch('/emails',AuthenticationToken,fspController.updateEmail);
+app.patch('/geolocation',AuthenticationToken,fspController.updateGeolocation)
 module.exports = app 

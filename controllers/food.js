@@ -92,12 +92,15 @@ class FoodMenuController{
         try {
             const {foodId} = req.query;
             const items =  await foodService.getFoodById(foodId);
+            const foodName = items.name;
+            const categoryName = items.categoryId['name'];
+            const relatedItems = await foodService.relatedFoods(foodId,foodName,categoryName)
             res.status(201).json({
                 status:true,
-                data: items,
+                data: {food:items,relatedItems},
               });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.status(400).json({status:false, error: error.message });
         }
     }

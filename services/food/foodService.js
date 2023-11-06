@@ -1,6 +1,5 @@
 const { default: mongoose } = require("mongoose");
 const foodModel = require("../../model/foodModel");
-const Food = require("../../model/foodModel");
 const DailyFoodMenu = require("../../model/daily_food_model");
 
 
@@ -156,17 +155,16 @@ class FoodService{
           }
     }
 
-    async getAllTodayFoodsGroupByCategory(id){
+    async getAllTodayFoodsGroupByCategory(fspId){
         const today = new Date();
         today.setHours(0, 0, 0, 0); 
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1); 
-    
         try {
             const aggregationPipeline = [
                {
                 $match:{
-                    fspId:new mongoose.Types.ObjectId(id),
+                    fspId:new mongoose.Types.ObjectId(fspId),
                     timestamp: { $gt:today,$lt: tomorrow },
                 }
                },
@@ -237,7 +235,7 @@ class FoodService{
     async getFoodById(foodId){
         return await DailyFoodMenu.findOne({_id:foodId}).populate({
             path:"fspId",
-            select:"_id name merchantId logo canDeliver isVerified"
+            select:"_id name merchantId logo canDeliver isVerified address"
         }).populate({
             path:'categoryId',
                 select:"_id name foodTypeId fspId",
@@ -247,6 +245,21 @@ class FoodService{
                 }
         });
     }
+    async relatedFoods(foodId,foodname,categoryName){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        return await DailyFoodMenu.find({
+            timestamp:{$gt:today,$lt:tomorrow},
+            _id:{$ne:foodId},
+                $or:[
+                    {name: { $regex: new RegExp(foodname, 'i')  }},
+                    {name: { $regex: new RegExp(categoryName, 'i')}}
+                ]
+        });
+    }
+    
 }
 
 module.exports = new FoodService();

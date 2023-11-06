@@ -125,6 +125,29 @@ class FSPController {
             res.status(400).json({status:false, error: error.message });
         }
     }
+    async updateGeolocation(req,res){
+        try {
+            const {fspId,geolocation} = req.body;
+            const {userId} = req.user;
+            if(!fspId)throw new Error("Food service id is required")
+            const result =await fspService.update(fspId,userId,{$set: {
+                'address': {
+                    geolocation: {
+                      latitude: geolocation.latitude,
+                      longitude: geolocation.longitude
+                    }
+                }
+              }})
+            if(result){
+                return res.status(200).json({status:true,data:"success"})
+            }else{
+                throw new Error("Failed to update geolocation")
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
     
 
 }
