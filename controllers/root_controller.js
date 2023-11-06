@@ -14,7 +14,7 @@ class RootController{
             }
             const result =await foodService.getAllFoodMenus();
             const foodByCategory = await foodService.getTodaysFoodsGroupByCategory();
-            const category = await categoryService.getAllCategory();
+            const category = await categoryService.getAllTodayCategory();
             const foodType = await categoryService.getAllFoodType();
             let fsps = await fspService.getAll(); 
             //remove attributes 

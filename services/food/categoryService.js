@@ -1,4 +1,5 @@
 const categoryModel = require("../../model/categoryModel");
+const DailyFoodMenu = require("../../model/daily_food_model");
 const FoodType = require("../../model/food.type.model");
 
 class CategoryService{
@@ -25,6 +26,7 @@ class CategoryService{
         return result
     }
     async getAllCategory(){
+        await this.getAllTodayCategory();
         return await categoryModel.find().sort({createdAt:-1});
     }
     async getAllCategoryByFSPId(id){
@@ -44,7 +46,27 @@ class CategoryService{
             fspId:fspId
         })
     }
-
+  async getAllTodayCategory(){
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1); 
+   
+    const result= await DailyFoodMenu.find({
+        timestamp:{$gt:today,$lt:tomorrow}
+    },'categoryId').populate('categoryId','name foodTypeId url fspId createdBy updatedAt updatedBy __v');
+    let categories=[];
+    const uniqueCategories = new Set();
+    for(const item of result){
+         const categoryData = item['categoryId']._doc;
+        const categoryId = categoryData._id.toString();
+        if (!uniqueCategories.has(categoryId)) {
+            categories.push({ ...categoryData });
+            uniqueCategories.add(categoryId);
+        }
+    }
+   return categories;
+  }
 }
 
 module.exports = new CategoryService();

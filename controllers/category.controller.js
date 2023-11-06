@@ -65,6 +65,13 @@ class CategoryController{
              res.status(400).json({status:false, error: error.message });
         }
     }
+    async getAllTodayCategories(req,res){
+        try {
+            res.status(200).json({status:true,data:await categoryService.getAllTodayCategory()});
+        } catch (error) {
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 }
 module.exports = new CategoryController();
