@@ -46,27 +46,49 @@ class CategoryService{
             fspId:fspId
         })
     }
-  async getAllTodayCategory(){
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1); 
-   
-    const result= await DailyFoodMenu.find({
-        timestamp:{$gt:today,$lt:tomorrow}
-    },'categoryId').populate('categoryId','name foodTypeId url fspId createdBy updatedAt updatedBy __v');
-    let categories=[];
-    const uniqueCategories = new Set();
-    for(const item of result){
-         const categoryData = item['categoryId']._doc;
-        const categoryId = categoryData._id.toString();
-        if (!uniqueCategories.has(categoryId)) {
-            categories.push({ ...categoryData });
-            uniqueCategories.add(categoryId);
+    async getAllTodayCategory(){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+    
+        const result= await DailyFoodMenu.find({
+            timestamp:{$gt:today,$lt:tomorrow}
+        },'categoryId').populate('categoryId','name foodTypeId url fspId createdBy updatedAt updatedBy __v');
+        let categories=[];
+        const uniqueCategories = new Set();
+        for(const item of result){
+            const categoryData = item['categoryId']._doc;
+            const categoryId = categoryData._id.toString();
+            if (!uniqueCategories.has(categoryId)) {
+                categories.push({ ...categoryData });
+                uniqueCategories.add(categoryId);
+            }
         }
+    return categories;
     }
-   return categories;
-  }
+    async searchCategory(query){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+    
+        const result= await DailyFoodMenu.find({
+            timestamp:{$gt:today,$lt:tomorrow},
+            name:{$regex:query,$options:'i'}
+        },'categoryId').populate('categoryId','name foodTypeId url fspId createdBy updatedAt updatedBy __v');
+        let categories=[];
+        const uniqueCategories = new Set();
+        for(const item of result){
+            const categoryData = item['categoryId']._doc;
+            const categoryId = categoryData._id.toString();
+            if (!uniqueCategories.has(categoryId)) {
+                categories.push({ ...categoryData });
+                uniqueCategories.add(categoryId);
+            }
+        }
+    return categories;
+    }
 }
 
 module.exports = new CategoryService();

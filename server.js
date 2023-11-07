@@ -21,6 +21,7 @@ const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
 const { ipAddress } = require("./middleware/ip-address");
 const users = require("./controllers/users");
+const root_controller = require("./controllers/root_controller");
 // number of cpu or core available 
 const numCPUS = os.cpus().length;
 connectDB();
@@ -42,7 +43,7 @@ app.use(cookieParser());
 app.use(ipAddress);
 //app.use(TiffinAccessToken);
 app.get('/',rootRoute);
-
+app.get('/search',root_controller.search)
 app.use('/user',userRoute);
 app.post('/login',users.authUser);
 app.post("/register",users.createUser);

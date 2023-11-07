@@ -37,8 +37,26 @@ class RootController{
 
 
     }
+    
+    async search(req,res){
+        try{
+            const {q} = req.query;
+            const foods=await foodService.searchFood(q);
+            const categories = await categoryService.searchCategory(q);
+            const fsps =await fspService.searchFSPs(q);
+            res.status(200).json({success:true,data:{
+                foods,
+                categories,
+                fsps
+            }})
+
+        }catch(error){
+            console.debug(error);
+            res.status(500).json({success:false,error:error.message})
+        }
 
 
+    }
 }
 
 module.exports = new RootController();

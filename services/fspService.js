@@ -37,6 +37,16 @@ class FSPService{
         }
         return await fsp.updateOne({_id:fspId},update)
     }
+    //search food service provider
+    async searchFSPs(query){
+        return await fsp.find({
+            $or:[
+                {name:{$regex: query, $options: "i" }},
+                {description:{$regex: query, $options: "i" }}
+            ]
+        });
+    }
+    
 
 }
 

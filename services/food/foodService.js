@@ -259,6 +259,28 @@ class FoodService{
                 ]
         });
     }
+    async foodByCategoryId(categoryId){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        return await DailyFoodMenu.find({
+            timestamp:{$gt:today,$lt:tomorrow},
+            categoryId:categoryId
+        });
+        //.populate('fspId','review rating name merchantId description logo address canDeliver isVerified socailMedia contacts');
+    }
+    //search for food
+    async searchFood(query){
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        return await DailyFoodMenu.find({
+            timestamp:{$gt:today,$lt:tomorrow},
+            name: { $regex: query, $options: "i" },
+        });
+    }
     
 }
 
