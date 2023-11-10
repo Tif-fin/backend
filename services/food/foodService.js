@@ -20,6 +20,15 @@ class FoodService{
         return createdFoodMenu;
        
     }
+   async updateFoodMenuForToday(userId,id,mrp,compareAt,isAvailable) {
+    //check for authoriziation 
+    
+        return await DailyFoodMenu.updateOne({_id:id},{
+           $set:{price:{mrp:mrp,compareAtPrice:compareAt},
+           isAvailable:isAvailable
+        }
+        });
+   }
     
     async createFoodMenuForToday(data){
         //date 

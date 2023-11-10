@@ -47,7 +47,23 @@ class FoodMenuController{
             res.status(400).json({status:false, error: error.message });
         }
     }
-
+    //updateMenuForToday
+    async updateMenuForToday(req,res){
+        try {
+           
+           const {userId} = req.user
+            let  {id,price,isAvailable} = req.body 
+            const updateResult =  await foodService.updateFoodMenuForToday(userId,id,price.mrp,price.compareAtPrice,isAvailable);
+            //response with success 
+            res.status(201).json({
+                status:updateResult==null?false:true,
+                data: "Success",
+              });
+        } catch (error) {
+           console.log(error);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
     async fetchAllFoods(req,res){
         try {
             const items =  await foodService.getAllFoodMenus();
