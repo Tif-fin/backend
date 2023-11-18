@@ -57,20 +57,29 @@ class FSPController {
     async fetchFSPById(req,res,next){
         try {
             const {fspId} = req.query;
-            const {userId} = req.user; 
+            const userId =req.user==undefined?undefined: req.user.userId; 
             let fsps = await fspService.getFSPById(fspId);
-            switch (await fspService.checkPrivilege(userId)) {
-                case USERTYPE.MERCHANT:
-                    break;
-                default:
-                    fsps = removeAttribute(fsps,['verification_histories',
+            if(!userId){
+                fsps = removeAttribute([fsps],['verification_histories',
                     'verification_requests','employees','subscriptions','created_date','meta',
                     'isVerified','isListing'
                 ])
+            }else{
+                switch (await fspService.checkPrivilege(userId)) {
+                    case USERTYPE.MERCHANT:
+                        break;
+                    default:
+                        fsps = removeAttribute([fsps],['verification_histories',
+                        'verification_requests','employees','subscriptions','created_date','meta',
+                        'isVerified','isListing'
+                    ])
+                }
             }
+           
           
-        return res.status(200).json({success:true,data:fsps})
+        return res.status(200).json({success:true,data:fsps[0]})
         } catch (error) {
+            console.log(error);
             res.status(400).json({status:false, error: error.message });
         }
     }
