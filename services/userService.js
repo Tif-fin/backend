@@ -1,5 +1,6 @@
 const { generateAuthToken } = require("../middleware/authToken");
 const emailVerifierModel = require("../model/emailVerifierModel");
+const FSPTrustedUserFeature = require("../model/fsp_trusted_feature");
 const user = require("../model/user");
 const { generateCode, comparePassword, encryptPassword } = require("../utils/const");
 const { sendVerificationMail } = require("./mail/sendMail");
@@ -55,6 +56,21 @@ class UserService{
         return await user.find({});
     }
 
+    async requestForVerifiedUser({userId,credit,fspId}){
+        const result = await FSPTrustedUserFeature.findOne({fspId})
+        const index = result.users.findIndex((user)=>user.userId==userId)
+        if(index!=-1){
+            throw new Error("Already request")
+        }
+        return await FSPTrustedUserFeature.findOneAndUpdate({fspId:fspId},{
+            $push:{
+                users:{
+                    userId,
+                    credit
+                }
+            }
+        })
+    }
 
     
 }

@@ -4,6 +4,7 @@ const { USERTYPE } = require("../utils/const")
 const { removeAttribute } = require("../utils/user.hide.secrete")
 const fspValidation = require("../validation/fspValidation")
 const haversineDistance = require("../utils/distance")
+const trusteduserfeature = require("../validation/trusteduserfeature")
 
 class FSPController {
 
@@ -39,16 +40,6 @@ class FSPController {
         try {
             const {userId} = req.user 
             let fsps = await fspService.getByMerchantId(userId);
-            //switch (await fspService.checkPrivilege(userId)) {
-            //    case USERTYPE.MERCHANT:
-            //        break;
-            //    default:
-            //        fsps = removeAttribute(fsps,['verification_histories',
-            //        'verification_requests','employees','subscriptions','created_date','meta',
-            //        'isVerified','isListing'
-            //    ])
-            //}
-          
         return res.status(200).json({success:true,data:fsps})
         } catch (error) {
             res.status(400).json({status:false, error: error.message });
@@ -59,6 +50,8 @@ class FSPController {
             const {fspId} = req.query;
             const userId =req.user==undefined?undefined: req.user.userId; 
             let fsps = await fspService.getFSPById(fspId);
+            const trusteduserfeature = await fspService.getTrustedUserFeatureById({fspId});
+            console.log(trusteduserfeature);
             if(!userId){
                 fsps = removeAttribute([fsps],['verification_histories',
                     'verification_requests','employees','subscriptions','created_date','meta',
@@ -75,9 +68,8 @@ class FSPController {
                     ])
                 }
             }
-           
-          
-        return res.status(200).json({success:true,data:fsps[0]})
+          const data ={...fsps[0]._doc,trusteduserfeature}
+        return res.status(200).json({success:true,data})
         } catch (error) {
             console.log(error);
             res.status(400).json({status:false, error: error.message });
@@ -175,12 +167,53 @@ class FSPController {
         dFsps = removeAttribute(dFsps,['verification_histories','verification_requests','employees','subscriptions','created_date','meta',])
         res.status(200).json({success:true,data:dFsps});
       } catch (error) {
-       
         res.status(400).json({status:false, error: error.message });
       }
 
     }
-    
+    async getFSPTrustedFeature(req,res){
+        try {
+            const {fspId} = req.query;
+            if(!fspId){
+                throw new Error("FSPID is required")
+            }
+            let result = await fspService.getTrustedUserFeatureById({fspId})
+            res.status(200).json({success:true,data:result})
+        } catch (error) {
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
+    async createFSPTrustedFeature(req,res){
+        try {
+            const {userId} = req.user;
+            const {fspId,credits} = req.body;
+            const validatedData = trusteduserfeature.validate({createdBy:userId,fspId:fspId,credits:credits})
+            const result = await fspService.createTrustedUserFeature(validatedData)
+            console.log(result);
+            res.status(200).json({success:true,data:result})
+        } catch (error) {
+            console.log(error.message);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
+    async updateFSPTrustedFeature(req,res){
+        try {
+            const {userId} = req.user;
+            const {fspId,_id,status,message} = req.body;
+            const result = await fspService.updateTrustedUserFeature({
+                _id,
+                fspId,
+                userId,
+                status,
+                message
+            })
+            console.log(result);
+            res.status(200).json({success:true,data:result})
+        } catch (error) {
+            console.log(error.message);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 }
 

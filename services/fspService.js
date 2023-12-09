@@ -1,4 +1,5 @@
 const fsp = require("../model/fsp");
+const FSPTrustedUserFeature = require("../model/fsp_trusted_feature");
 const { USERTYPE } = require("../utils/const");
 
 // fsp service 
@@ -46,8 +47,31 @@ class FSPService{
             ]
         });
     }
-    
-
+    async getTrustedUserFeatureById({fspId}){
+        return FSPTrustedUserFeature.findOne({fspId:fspId},'_id fspId isActive credits users')
+        .populate({
+            path: 'users.userId',
+            model: 'users', 
+            select: '_id phoneNumber firstname lastname email profile', 
+          })
+    }
+    async createTrustedUserFeature(data){
+        return await FSPTrustedUserFeature({...data}).save();
+    }
+    async updateTrustedUserFeature({userId,status,_id,fspId,message}){
+        const data= await FSPTrustedUserFeature.findOne({fspId});
+        const index = data.users.findIndex(user=>{
+            return user._id==_id;
+         })
+         if(index!==-1){
+             data.users[index].status=status;
+             data.users[index].updatedAt =  Date.now();
+             data.users[index].message = message;
+         }else{
+             throw new Error("User not found");
+         }
+        return await data.save();
+    }
 }
 
 

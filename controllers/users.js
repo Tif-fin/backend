@@ -110,6 +110,17 @@ class UserController {
             req.user = {userId}
             this.getCurrentUser(req,res,next)
         }
+        async requestForVerifiedUser(req,res){
+            const {userId} = req.user;
+            const {fspId,credit} = req.body; 
+            try {
+                let result=await userService.requestForVerifiedUser({userId,credit,fspId});
+                console.log(result);
+                return res.status(200).json({success:true,data:result})
+            } catch (error) {
+                res.status(400).json({status:false, error: error.message });
+            }
+        }
 
 }
 
