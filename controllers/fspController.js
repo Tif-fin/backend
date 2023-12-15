@@ -214,6 +214,17 @@ class FSPController {
             res.status(400).json({status:false, error: error.message });
         }
     }
+    async getPaymentMethodForUser(req,res){
+        try {
+            const {userId} = req.user;
+            const {fspId} = req.query;
+            const result = await fspService.getPaymentMethodForUser({userId,fspId})
+            res.status(200).json({success:true,data:result})
+        } catch (error) {
+            console.log(error.message);
+            res.status(400).json({status:false, error: error.message });
+        }
+    }
 
 }
 

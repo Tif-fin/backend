@@ -20,4 +20,5 @@ app.get('/trusted_user_feature',fspController.getFSPTrustedFeature)
 app.post('/trusted_user_feature',AuthenticationToken,fspController.createFSPTrustedFeature)
 app.post('/trusted_user_feature/request',AuthenticationToken,users.requestForVerifiedUser)
 app.patch('/trusted_user_feature',AuthenticationToken,fspController.updateFSPTrustedFeature)
+app.get('/payment_methods',AuthenticationToken,fspController.getPaymentMethodForUser)
 module.exports = app 

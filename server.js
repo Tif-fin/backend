@@ -10,13 +10,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const cors = require("cors");
-const { TiffinAccessToken } = require("./middleware/tiffin-api-token");
 const userRoute = require('./routes/user');
 const fspRoute = require("./routes/fsp");
 const categoryRoute = require("./routes/category");
 const menuRoute = require("./routes/food");
 const rootRoute = require("./routes/root");
 const mediaRoute=require("./routes/media");
+const orderRoute=require("./routes/orders");
 const connectDB = require("./config/db.connect");
 const ValidationError = require("./exception/ValidateError");
 const { ipAddress } = require("./middleware/ip-address");
@@ -51,6 +51,7 @@ app.use('/fsp',fspRoute);
 app.use("/food",menuRoute);
 app.use("/category",categoryRoute)
 app.use("/media",mediaRoute)
+app.use("/order",orderRoute)
 
 //handle error here 
 app.use((err,req,res,next)=>{

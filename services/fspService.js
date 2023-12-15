@@ -1,6 +1,8 @@
 const fsp = require("../model/fsp");
 const FSPTrustedUserFeature = require("../model/fsp_trusted_feature");
+const Order = require("../model/orders");
 const { USERTYPE } = require("../utils/const");
+const OrderS = require("./order/order");
 
 // fsp service 
 class FSPService{
@@ -72,6 +74,25 @@ class FSPService{
          }
         return await data.save();
     }
+    async getPaymentMethodForUser({userId,fspId}){
+        const data = await FSPTrustedUserFeature.findOne({'users.userId':userId,fspId:fspId,isActive:true}).sort({createdAt:-1})
+        let trusted_user = null;
+        if(data){
+            trusted_user = data.users.find(user=>user.userId.toString()===userId && user.status==='accept')
+        }
+        const orders =await Order.find({userId:userId,fspId:fspId,paymentStatus:"Pending",paymentMethod:"Credit"})
+        let unpaid = 0;
+        for(const item in orders){
+            unpaid+= item["totalAmount"]
+        }
+        let paymentMethod = []
+        if(trusted_user){
+            trusted_user = {...trusted_user._doc,unpaid};
+            paymentMethod.push("Trusted User Credit")
+        }
+        return {paymentMethod,trusted_user}
+    }
+    
 }
 
 
