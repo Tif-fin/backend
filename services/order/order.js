@@ -1,5 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const Order = require("../../model/orders");
+const fsp = require("../../model/fsp");
+const user = require("../../model/user");
 
 
 class OrderService {
@@ -50,7 +52,49 @@ class OrderService {
         .populate("fspId","_id logo name");
         return order
     }
-   
+    async checkAuthorization({userId,fspId}){
+        if(!await fsp.find({merchantId:userId,_id:fspId})){
+            throw new Error("Authorized to this fsp")
+        }
+    }
+    getAllTodayOrderByFSPId= async ({userId,fspId})=>{
+        await this.checkAuthorization({fspId,userId});
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        return Order.find({fspId,    
+            createdAt:{$gt:today,$lt:tomorrow},
+            paymentMethod:{
+                $ne:"None"
+            }
+        })
+        .populate("userId","_id firstname middlename lastname username profile email isVerified phoneNumber country_code")
+       .sort({createdAt:-1})
+    }
+    getAllOrderByFSPId= async ({userId,fspId})=>{
+        await this.checkAuthorization({fspId,userId});
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1); 
+        return Order.find({fspId,
+            paymentMethod:{
+                $ne:"None"
+            }
+        })
+        .populate("userId","_id firstname middlename lastname username profile email isVerified phoneNumber country_code")
+        .sort({createdAt:-1})
+    }
+    getCustomers = async({userId,fspId})=>{
+        await this.checkAuthorization({fspId,userId});
+        const uniqueUserIds =await Order.distinct("userId",{fspId});
+        console.log(uniqueUserIds);
+        const userInfo = await user.find({ _id: { $in: uniqueUserIds } })
+      .select('_id  email firstname middlename lastname profile')
+      .exec();
+        return  userInfo;
+    }
 
 }
 const OrderS = new OrderService()

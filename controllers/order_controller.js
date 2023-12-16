@@ -64,9 +64,14 @@ class Order{
     async getAllOrders(req,res){
         try {
             const {userId} = req.user;
-            const {today} = req.query;
-            const result = today?await OrderS.getAllTodayOrders({userId}): await OrderS.getAllOrders({userId})
-            res.status(200).json({success:true,data:result})
+            const {today,fspId} = req.query;
+            let result =[];
+            if(today && fspId){
+                result = today?await OrderS.getAllTodayOrderByFSPId({userId,fspId}):await OrderS.getAllOrderByFSPId({userId,fspId})
+            }else{
+                result = today?await OrderS.getAllTodayOrders({userId}): await OrderS.getAllOrders({userId})
+            }
+            return res.status(200).json({success:true,data:result})
         } catch (error) {
             res.status(500).json({
                 success:false,
@@ -81,6 +86,22 @@ class Order{
             const result = await OrderS.getOrderDetailsById({userId,orderId})
             const cancellation= await CancellationS.getCancellationByOrderId({orderId})
             res.status(200).json({success:true,data:{...result._doc,cancellation}})
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success:false,
+                error:error.message
+            })
+        }
+    }
+    
+    async getCustomers(req,res){
+        try {
+            const {userId} = req.user;
+            const {fspId} = req.query;
+            const result = await OrderS.getCustomers({userId,fspId})
+            console.log(result);
+            res.status(200).json({success:true,data:result})
         } catch (error) {
             console.log(error);
             res.status(500).json({

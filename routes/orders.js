@@ -8,4 +8,5 @@ app.post('/',AuthenticationToken,OrderController.createOrder)
 app.patch('/payment',AuthenticationToken,OrderController.orderPaymentMethod)
 app.get('/detail',AuthenticationToken,OrderController.getOrderDetailsById)
 app.get('/',AuthenticationToken,OrderController.getAllOrders)
+app.get('/customers',AuthenticationToken,OrderController.getCustomers)
 module.exports = app 

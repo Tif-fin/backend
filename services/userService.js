@@ -30,7 +30,7 @@ class UserService{
         }
     }
     async auth ({email,password}){
-        let currentUser = await user.findOne({email});
+        let currentUser = await user.findOne({email:{ $regex: new RegExp(email, 'i') }});
         if(!currentUser) throw new Error("Invalid credentials")
             
         if(await comparePassword(password,currentUser.password)){
