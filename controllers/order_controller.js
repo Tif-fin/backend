@@ -1,3 +1,5 @@
+const Rating = require("../model/rating");
+const RatingS = require("../services/food/rating");
 const CancellationS = require("../services/order/cancellation");
 const OrderS = require("../services/order/order");
 const order_validation = require("../validation/order_validation");
@@ -85,7 +87,8 @@ class Order{
             const {orderId} = req.query;
             const result = await OrderS.getOrderDetailsById({userId,orderId})
             const cancellation= await CancellationS.getCancellationByOrderId({orderId})
-            res.status(200).json({success:true,data:{...result._doc,cancellation}})
+            const reviews = await RatingS.getReviewsByOrderId({orderId,userId})
+            res.status(200).json({success:true,data:{...result._doc,cancellation,reviews}})
         } catch (error) {
             console.log(error);
             res.status(500).json({
