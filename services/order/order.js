@@ -22,6 +22,15 @@ class OrderService {
         return result.save();
         
     }
+    updateOrderStatus = async({orderId,fspId,status,userId})=>{
+        await this.checkAuthorization({userId,fspId});
+        console.log(await Order.findOne({_id:new mongoose.Types.ObjectId(orderId),
+            fspId:new mongoose.Types.ObjectId(fspId)}));
+        return await Order.findOneAndUpdate({_id:new mongoose.Types.ObjectId(orderId),
+            fspId:new mongoose.Types.ObjectId(fspId)},{
+            status:status
+        });
+    }
     getRecentOrder = async({userId})=>{
         return await Order.find({userId,paymentMethod:{
             $ne:"None"
@@ -36,19 +45,19 @@ class OrderService {
             createdAt:{$gt:today,$lt:tomorrow},
             paymentMethod:{
             $ne:"None"
-        }}).sort({createdAt: -1}).populate("userId","_id name username profile email")
+        }}).sort({createdAt: -1}).populate("userId","_id firstname lastname username profile email")
         .populate("fspId","_id logo name");
     }
     getAllOrders = async ({userId})=>{
         return   await Order.find({userId,
             paymentMethod:{
             $ne:"None"
-        }}).populate("userId","_id name username profile email")
+        }}).populate("userId","_id firstname lastname username profile email")
         .populate("fspId","_id logo name").sort({createdAt: -1})
     }
     getOrderDetailsById= async({userId,orderId})=>{
         let order= await Order.findOne({_id:orderId,userId})
-        .populate("userId","_id name username profile email")
+        .populate("userId","_id firstname lastname username profile email")
         .populate("fspId","_id logo name");
         return order
     }
@@ -74,11 +83,8 @@ class OrderService {
     }
     getAllOrderByFSPId= async ({userId,fspId})=>{
         await this.checkAuthorization({fspId,userId});
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); 
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1); 
-        return Order.find({fspId,
+       
+        return await Order.find({fspId:new mongoose.Types.ObjectId(fspId),
             paymentMethod:{
                 $ne:"None"
             }
@@ -89,11 +95,22 @@ class OrderService {
     getCustomers = async({userId,fspId})=>{
         await this.checkAuthorization({fspId,userId});
         const uniqueUserIds =await Order.distinct("userId",{fspId});
-        console.log(uniqueUserIds);
         const userInfo = await user.find({ _id: { $in: uniqueUserIds } })
       .select('_id  email firstname middlename lastname profile')
       .exec();
         return  userInfo;
+    }
+    getAllOrderByUserId = async({userId,fspId,id})=>{
+        await this.checkAuthorization({fspId,userId});
+        return await Order.find({userId:id,fspId:fspId})
+        .populate("userId","_id firstname lastname username profile email")
+        .populate("fspId","_id logo name").sort({createdAt:-1});
+    }
+    updatePaymentStatus = async({orderId,fspId,status,userId})=>{
+        await this.checkAuthorization({fspId,userId});
+        return await Order.findOneAndUpdate({_id:orderId,fspId:fspId},{
+            paymentStatus:status
+        })
     }
 
 }

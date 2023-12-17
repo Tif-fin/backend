@@ -27,6 +27,27 @@ class Order{
         
         }
     }
+    async updateOrderStatus(req,res){
+        try {
+            const {userId} = req.user;
+            const {orderId,fspId,status} = req.body;
+            console.log(req.body);
+            const result = await OrderS.updateOrderStatus({orderId,fspId,status,userId})
+            console.log(result);
+            if(result){
+                res.status(200).json({success:true,data:result})
+            }else{
+                throw new Error("Failed to update")
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success:false,
+                error:error.message
+            })
+        
+        }
+    }
     async orderPaymentMethod(req,res){
         try {
             const {userId} = req.user;
@@ -69,7 +90,7 @@ class Order{
             const {today,fspId} = req.query;
             let result =[];
             if(today && fspId){
-                result = today?await OrderS.getAllTodayOrderByFSPId({userId,fspId}):await OrderS.getAllOrderByFSPId({userId,fspId})
+                result = today==="true"?await OrderS.getAllTodayOrderByFSPId({userId,fspId}):await OrderS.getAllOrderByFSPId({userId,fspId})
             }else{
                 result = today?await OrderS.getAllTodayOrders({userId}): await OrderS.getAllOrders({userId})
             }
@@ -114,7 +135,39 @@ class Order{
         }
     }
   
-
+    async getAllOrderByUserId(req,res){
+        try {
+            const {userId} = req.user;
+            const {id,fspId} = req.query;
+            let result =await OrderS.getAllOrderByUserId({userId,fspId,id});
+            return res.status(200).json({success:true,data:result})
+        } catch (error) {
+            res.status(500).json({
+                success:false,
+                error:error.message
+            })
+        }
+    }
+    //updatePaymentStatus
+    async updatePaymentStatus(req,res){
+        try {
+            const {userId} = req.user;
+            const {orderId,fspId,status} = req.body;
+            const result = await OrderS.updatePaymentStatus({orderId,fspId,status,userId})
+            if(result){
+                res.status(200).json({success:true,data:result})
+            }else{
+                throw new Error("Failed to update")
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                success:false,
+                error:error.message
+            })
+        
+        }
+    }
 }
 
 const OrderController = new Order()
