@@ -56,7 +56,7 @@ class OrderService {
         .populate("fspId","_id logo name").sort({createdAt: -1})
     }
     getOrderDetailsById= async({userId,orderId})=>{
-        let order= await Order.findOne({_id:orderId,userId})
+        let order= await Order.findOne({_id:orderId})
         .populate("userId","_id firstname lastname username profile email")
         .populate("fspId","_id logo name");
         return order

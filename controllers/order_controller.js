@@ -106,7 +106,9 @@ class Order{
         try {
             const {userId} = req.user;
             const {orderId} = req.query;
+            console.log(userId);
             const result = await OrderS.getOrderDetailsById({userId,orderId})
+            if(result===null)throw new Error("Order not found")
             const cancellation= await CancellationS.getCancellationByOrderId({orderId})
             const reviews = await RatingS.getReviewsByOrderId({orderId,userId})
             res.status(200).json({success:true,data:{...result._doc,cancellation,reviews}})

@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     email:{type:String,require:true,unique:true},
     emailVerified:{type:Boolean,default:false},
     dob:{type:Date,require:true},
-    profile:{type:String,require:false,default:null},
+    profile:{type:String,require:false,default:""},
     password:{type:String},
     meta:{
         type:Object,
