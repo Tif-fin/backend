@@ -5,8 +5,9 @@ class FCMService{
  async   addUser({userId,token}){
         if(!await FCM.findOne({userId,token})){
             return await FCM({userId,token}).save();
+        }else{
+          return await FCM.find({userId},{token});
         }
-        return null;
     }
 
 
