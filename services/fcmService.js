@@ -10,21 +10,35 @@ class FCMService{
         }
     }
 
-
+    async  _handleRemoveToken({token}){
+      await FCM.findOneAndDelete({token})
+    }
     async notifyUser({title,body,token,data,channelId}){
-      return await firebaseadmin.messaging().send({
-            notification:{
-                title,
-                body
-            },
-            android: {
-                notification: {
-                  channelId: channelId,
-                },
+      //messaging/registration-token-not-registered
+
+      
+      try {
+        return await firebaseadmin.messaging().send({
+          notification:{
+              title,
+              body
+          },
+          android: {
+              notification: {
+                channelId: channelId,
               },
-              data:data,
-            token:token
-        })
+            },
+            data:data,
+          token:token
+      })  
+      } catch (error) {
+        if(error.code==='messaging/registration-token-not-registered'){
+           return this._handleRemoveToken({token})
+        }else{
+          return null;
+        }
+       
+      }
     }
 
 }
