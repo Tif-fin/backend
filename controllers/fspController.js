@@ -51,7 +51,7 @@ class FSPController {
             const userId =req.user==undefined?undefined: req.user.userId; 
             let fsps = await fspService.getFSPById(fspId);
             const trusteduserfeature = await fspService.getTrustedUserFeatureById({fspId});
-            console.log(trusteduserfeature);
+            // console.log(trusteduserfeature);
             if(!userId){
                 fsps = removeAttribute([fsps],['verification_histories',
                     'verification_requests','employees','subscriptions','created_date','meta',
@@ -71,7 +71,7 @@ class FSPController {
           const data ={...fsps[0]._doc,trusteduserfeature}
         return res.status(200).json({success:true,data})
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(400).json({status:false, error: error.message });
         }
     }
@@ -189,10 +189,9 @@ class FSPController {
             const {fspId,credits} = req.body;
             const validatedData = trusteduserfeature.validate({createdBy:userId,fspId:fspId,credits:credits})
             const result = await fspService.createTrustedUserFeature(validatedData)
-            console.log(result);
             res.status(200).json({success:true,data:result})
         } catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             res.status(400).json({status:false, error: error.message });
         }
     }
@@ -207,7 +206,6 @@ class FSPController {
                 status,
                 message
             })
-            console.log(result);
             res.status(200).json({success:true,data:result})
         } catch (error) {
             console.log(error.message);
@@ -221,7 +219,7 @@ class FSPController {
             const result = await fspService.getPaymentMethodForUser({userId,fspId})
             res.status(200).json({success:true,data:result})
         } catch (error) {
-            console.log(error.message);
+            // console.log(error.message);
             res.status(400).json({status:false, error: error.message });
         }
     }

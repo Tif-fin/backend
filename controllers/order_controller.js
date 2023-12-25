@@ -10,7 +10,6 @@ class Order{
     async createOrder(req,res){
         try {
             const {userId} = req.user;
-            console.log(req.body);
             const validatedData = order_validation.validate(req.body)
             const result = await OrderS.createOrder({data:validatedData,userId})
             if(result){
@@ -19,7 +18,7 @@ class Order{
                 throw new Error("Failed to place order")
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message
@@ -31,16 +30,14 @@ class Order{
         try {
             const {userId} = req.user;
             const {orderId,fspId,status} = req.body;
-            console.log(req.body);
             const result = await OrderS.updateOrderStatus({orderId,fspId,status,userId})
-            console.log(result);
             if(result){
                 res.status(200).json({success:true,data:result})
             }else{
                 throw new Error("Failed to update")
             }
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message
@@ -106,14 +103,13 @@ class Order{
         try {
             const {userId} = req.user;
             const {orderId} = req.query;
-            console.log(userId);
             const result = await OrderS.getOrderDetailsById({userId,orderId})
             if(result===null)throw new Error("Order not found")
             const cancellation= await CancellationS.getCancellationByOrderId({orderId})
             const reviews = await RatingS.getReviewsByOrderId({orderId,userId})
             res.status(200).json({success:true,data:{...result._doc,cancellation,reviews}})
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message
@@ -126,10 +122,8 @@ class Order{
             const {userId} = req.user;
             const {fspId} = req.query;
             const result = await OrderS.getCustomers({userId,fspId})
-            console.log(result);
             res.status(200).json({success:true,data:result})
         } catch (error) {
-            console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message
@@ -162,7 +156,6 @@ class Order{
                 throw new Error("Failed to update")
             }
         } catch (error) {
-            console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message

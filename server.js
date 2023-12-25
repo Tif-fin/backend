@@ -15,6 +15,7 @@ const fspRoute = require("./routes/fsp");
 const categoryRoute = require("./routes/category");
 const menuRoute = require("./routes/food");
 const rootRoute = require("./routes/root");
+const fcmRoute = require("./routes/fcm");
 const mediaRoute=require("./routes/media");
 const orderRoute=require("./routes/orders");
 const connectDB = require("./config/db.connect");
@@ -25,11 +26,11 @@ const root_controller = require("./controllers/root_controller");
 const schedule = require('node-schedule');
 const axios = require('axios')
 schedule.scheduleJob('*/5 * * * *', function(){
-    console.log("Started");
+    // console.log("Started");
     axios.get('https://tiffin-xoui.onrender.com/')
   .then(function (response) {
     // handle success
-    console.log(response);
+    // console.log(response);
   })
   .catch(function (error) {
     // handle error
@@ -71,7 +72,7 @@ app.use("/food",menuRoute);
 app.use("/category",categoryRoute)
 app.use("/media",mediaRoute)
 app.use("/order",orderRoute)
-
+app.use("/fcm",fcmRoute)
 //handle error here 
 app.use((err,req,res,next)=>{
     if(err){

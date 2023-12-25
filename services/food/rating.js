@@ -13,7 +13,7 @@ class RatingService {
         const result = await Rating({...data,userId}).save()
         if(result){
             const _data = await DailyFoodMenu.findOne({fspId:new mongoose.Types.ObjectId(data.fspId),_id:new mongoose.Types.ObjectId(data.foodId)})
-            console.log(_data);
+           // console.log(_data);
             if(_data){
                 _data.rating = await this._getAverageRatingForFood({foodId:data.foodId})
                 _data.review+=1;

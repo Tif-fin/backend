@@ -10,7 +10,7 @@ class RatingController{
         const result = await RatingS.rate({data:validateData,userId})
         return res.status(200).json({success:true,data:result})
      } catch (error) {
-      console.log(error);
+      // console.log(error);
         res.status(403).json({success:false,error:error.message})
      }
     }
@@ -20,7 +20,7 @@ class RatingController{
          const result = await RatingS.getReviews({foodId})
          return res.status(200).json({success:true,data:result})
       } catch (error) {
-         console.log(error);
+         // console.log(error);
          res.status(500).json({success:false,error:error.message})
       }
     }

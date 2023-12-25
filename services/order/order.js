@@ -1,16 +1,35 @@
 const { default: mongoose } = require("mongoose");
 const Order = require("../../model/orders");
 const fsp = require("../../model/fsp");
+const FCM = require("../../model/fcmtoken_model");
+const FCMS = require("../fcmService");
 const user = require("../../model/user");
 
 
 class OrderService {
 
      createOrder= async({data,userId}) =>{
-        return await  Order({
+        const order=  await  Order({
             ...data,
             userId
         }).save();
+       
+        if(order){
+            const {_id} =  order;
+            const currentFSP = await fsp.findOne({_id:data.fspId})
+            const orderPlacedBy = await user.findOne({_id:userId})
+            const fcms =await FCM.find({userId:currentFSP.merchantId})
+            for(const fcm of fcms){
+                const title = `${currentFSP.name}`
+                const body = `Order placed by ${orderPlacedBy.firstname} ${orderPlacedBy.lastname}`;
+                const data={
+                    "orderId":_id.toString()
+                }
+                await FCMS.notifyUser({title,body,token:fcm.token,channelId:"order",data})
+            }
+
+        }
+        return order;
     }
     setPaymentMethodCOD = async ({userId,orderId})=>{
        const result = await Order.findOne({_id:orderId,userId:userId})
@@ -24,8 +43,6 @@ class OrderService {
     }
     updateOrderStatus = async({orderId,fspId,status,userId})=>{
         await this.checkAuthorization({userId,fspId});
-        console.log(await Order.findOne({_id:new mongoose.Types.ObjectId(orderId),
-            fspId:new mongoose.Types.ObjectId(fspId)}));
         return await Order.findOneAndUpdate({_id:new mongoose.Types.ObjectId(orderId),
             fspId:new mongoose.Types.ObjectId(fspId)},{
             status:status

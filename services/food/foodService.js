@@ -104,10 +104,10 @@ class FoodService{
                     }
                 }
             ])
-            console.log(foods);
+           // console.log(foods);
             return foods;
           } catch (error) {
-            console.log(error);
+            //console.log(error);
             throw new Error('Failed to fetch food menus');
           }
     }
@@ -141,7 +141,7 @@ class FoodService{
            
             return foods;
           } catch (error) {
-           console.log(error);
+           //console.log(error);
             throw new Error('Failed to fetch food menus');
           }
     }
@@ -198,7 +198,7 @@ class FoodService{
             const foods = await DailyFoodMenu.aggregate(aggregationPipeline,{allowDiskUse:true})
             return foods;
           } catch (error) {
-           console.log(error);
+           //console.log(error);
             throw new Error('Failed to fetch food menus');
           }
     }
@@ -237,7 +237,7 @@ class FoodService{
             const foods = await DailyFoodMenu.aggregate(aggregationPipeline,{allowDiskUse:true})
             return foods;
           } catch (error) {
-           console.log(error);
+           //console.log(error);
             throw new Error('Failed to fetch food menus');
           }
     }

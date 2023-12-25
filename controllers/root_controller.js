@@ -16,7 +16,7 @@ class RootController{
         try{
             const {longitude,latitude} = req.query;
             if(longitude && latitude){
-                console.log("On the basis of the region");
+               // console.log("On the basis of the region");
             }
             const result =await foodService.getAllFoodMenus();
             const foodByCategory = await foodService.getTodaysFoodsGroupByCategory();
