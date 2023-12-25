@@ -34,7 +34,7 @@ schedule.scheduleJob('*/5 * * * *', function(){
   })
   .catch(function (error) {
     // handle error
-    console.log(error);
+    // console.log(error);
   })
   .finally(function () {
     // always executed
@@ -97,12 +97,12 @@ app.use((err,req,res,next)=>{
 if(cluster.isPrimary){
     for(let i=0;i<numCPUS;i++)cluster.fork()
     cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} died`);
+        // console.log(`worker ${worker.process.pid} died`);
       });
 }else{
     //listening to the port 
     app.listen(process.env.PORT||8000,()=>{
-        console.log("Tiffin Listening");
+        // console.log("Tiffin Listening");
     })
     console.log(`Worker ${process.pid} started`);
 }
