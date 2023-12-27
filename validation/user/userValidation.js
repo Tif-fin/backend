@@ -13,7 +13,7 @@ const UserSchema = Joi.object({
   dob: Joi.date().required(),
   profile: Joi.string().default(null),
   password: Joi.string().custom((value, helpers) => {
-    if (passwordStrengthChecker(value)!==2) {
+    if (passwordStrengthChecker(value)<2) {
       return helpers.message('Password is too weak. Please choose a stronger password.');
     }
 

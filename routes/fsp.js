@@ -21,4 +21,5 @@ app.post('/trusted_user_feature',AuthenticationToken,fspController.createFSPTrus
 app.post('/trusted_user_feature/request',AuthenticationToken,users.requestForVerifiedUser)
 app.patch('/trusted_user_feature',AuthenticationToken,fspController.updateFSPTrustedFeature)
 app.get('/payment_methods',AuthenticationToken,fspController.getPaymentMethodForUser)
+app.patch("/hours",AuthenticationToken,fspController.updateOpeningAndClosingHours)
 module.exports = app 

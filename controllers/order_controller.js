@@ -1,4 +1,4 @@
-const Rating = require("../model/rating");
+const FCMS = require("../services/fcmService");
 const RatingS = require("../services/food/rating");
 const CancellationS = require("../services/order/cancellation");
 const OrderS = require("../services/order/order");
@@ -32,12 +32,14 @@ class Order{
             const {orderId,fspId,status} = req.body;
             const result = await OrderS.updateOrderStatus({orderId,fspId,status,userId})
             if(result){
+                //notify the user the order status 
+                FCMS.notifyOrderStatusChange({status,fspId,orderId,title:"Order status"})
                 res.status(200).json({success:true,data:result})
             }else{
                 throw new Error("Failed to update")
             }
         } catch (error) {
-            // console.log(error);
+            console.log(error);
             res.status(500).json({
                 success:false,
                 error:error.message

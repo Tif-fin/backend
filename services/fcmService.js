@@ -1,4 +1,6 @@
 const FCM = require("../model/fcmtoken_model");
+const Order = require("../model/orders");
+const { isEmpty } = require("../utils/const");
 const firebaseadmin = require("../utils/fcm")
 
 class FCMService{
@@ -14,9 +16,7 @@ class FCMService{
       await FCM.findOneAndDelete({token})
     }
     async notifyUser({title,body,token,data,channelId}){
-      //messaging/registration-token-not-registered
-
-      
+      //messaging/registration-token-not-registered  
       try {
         return await firebaseadmin.messaging().send({
           notification:{
@@ -24,14 +24,15 @@ class FCMService{
               body
           },
           android: {
-              notification: {
-                channelId: channelId,
-              },
+            notification: {
+              channelId: channelId
             },
-            data:data,
+          },
+          data:data,
           token:token
       })  
       } catch (error) {
+        console.log(error);
         if(error.code==='messaging/registration-token-not-registered'){
            return this._handleRemoveToken({token})
         }else{
@@ -39,6 +40,24 @@ class FCMService{
         }
        
       }
+    }
+    notifyOrderStatusChange = async({title,orderId,fspId,status})=>{
+      const order =await Order.findOne({_id:orderId,fspId})
+      .populate("fspId","name")
+      .populate("userId","firstname lastname").exec();
+      if(!order){
+        return;
+      }
+      const {_id}= order.userId;//get the user id
+      const data = {
+        "orderId":orderId.toString()
+      }
+      const fcms =await FCM.find({userId:_id})// get the FCM 
+      for(const fcm of fcms){
+          const body = `${order.fspId.name}\n ${title} : ${status}`;
+          await this.notifyUser({title,body,token:fcm.token,channelId:"order",data})
+      }
+      
     }
 
 }

@@ -19,7 +19,6 @@ class OrderService {
             const currentFSP = await fsp.findOne({_id:data.fspId})
             const orderPlacedBy = await user.findOne({_id:userId})
             const fcms =await FCM.find({userId:currentFSP.merchantId})
-            console.log(fcms);
             for(const fcm of fcms){
                 const title = `${currentFSP.name}`
                 const body = `Order placed by ${orderPlacedBy.firstname} ${orderPlacedBy.lastname}`;
@@ -130,7 +129,6 @@ class OrderService {
             paymentStatus:status
         })
     }
-
 }
 const OrderS = new OrderService()
 module.exports = OrderS;
