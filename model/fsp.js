@@ -5,7 +5,7 @@ const FSPSchema = new mongoose.Schema({
     name:{type:String,unique:true,required:true},
     merchantId:{type:Schema.Types.ObjectId,required:true},
     description:{type:String,required:true},
-    logo:{type:String,default:null},
+    logo:{type:String,default:""},
     size:{type:String,enum:[SIZE.Large,SIZE.Medium,SIZE.Small],default:SIZE.Small},
     socailMedia:[],
     address:{
