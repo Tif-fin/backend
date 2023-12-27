@@ -34,7 +34,7 @@ const validateUserName  = (username)=>username.match( /^[a-zA-Z0-9_]{5,29}$/);
     2 -> Strong Password
 */
 const passwordStrengthChecker = (password)=>{
-    const strengthRegex = [/^(?=.*[a-z]).{6,}$/,/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/,/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{10,}$/]
+    const strengthRegex = [/^(?=.*[a-z]).{4,}$/,/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}$/,/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/]
     let strength = 0;
     for(let index=0;index<strengthRegex.length;index++)
         if(password.match(strengthRegex[index]))++strength;
