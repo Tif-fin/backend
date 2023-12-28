@@ -1,6 +1,7 @@
 const categoryModel = require("../../model/categoryModel");
 const DailyFoodMenu = require("../../model/daily_food_model");
 const FoodType = require("../../model/food.type.model");
+const Food = require("../../model/foodModel");
 
 class CategoryService{
 
@@ -41,10 +42,14 @@ class CategoryService{
 
     async deleteCategoryById(id,userId,fspId){
         //check here user is authorized or not
-        return await  categoryModel.deleteOne({
-            _id:id,
-            fspId:fspId
-        })
+        // if(await Food.findOne({categoryId:mongoose})){
+        //     throw new Error("Unable to delete category.")
+        // }
+        throw new Error("Feature not available at this time");
+        // return await  categoryModel.deleteOne({
+        //     _id:id,
+        //     fspId:fspId
+        // })
     }
     async getAllTodayCategory(){
         const today = new Date();

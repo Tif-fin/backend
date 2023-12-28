@@ -49,6 +49,7 @@ class RootController{
             const {q} = req.query;
             const foods=await foodService.searchFood(q);
             const categories = await categoryService.searchCategory(q);
+    
             const fsps =await fspService.searchFSPs(q);
             res.status(200).json({success:true,data:{
                 foods,
