@@ -58,12 +58,15 @@ class CategoryService{
         let categories=[];
         const uniqueCategories = new Set();
         for(const item of result){
-            const categoryData = item['categoryId']._doc;
-            const categoryId = categoryData._id.toString();
-            if (!uniqueCategories.has(categoryId)) {
-                categories.push({ ...categoryData });
-                uniqueCategories.add(categoryId);
+            if(item.categoryId!==null){
+                const categoryData = item['categoryId']._doc;
+                const categoryId = categoryData._id.toString();
+                if (!uniqueCategories.has(categoryId)) {
+                    categories.push({ ...categoryData });
+                    uniqueCategories.add(categoryId);
+                }
             }
+            
         }
     return categories;
     }
