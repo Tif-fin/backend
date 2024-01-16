@@ -23,24 +23,24 @@ const ValidationError = require("./exception/ValidateError");
 const { ipAddress } = require("./middleware/ip-address");
 const users = require("./controllers/users");
 const root_controller = require("./controllers/root_controller");
-const schedule = require('node-schedule');
-const axios = require('axios');
+// const schedule = require('node-schedule');
+// const axios = require('axios');
 const TiffinAccessToken = require("./middleware/tiffin-api-token");
-schedule.scheduleJob('*/5 * * * *', function(){
-    // console.log("Started");
-    axios.get('https://tiffin-xoui.onrender.com/')
-  .then(function (response) {
-    // handle success
-    // console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    // console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
-});
+// schedule.scheduleJob('*/5 * * * *', function(){
+//     // console.log("Started");
+//     axios.get('https://tiffin-xoui.onrender.com/')
+//   .then(function (response) {
+//     // handle success
+//     // console.log(response);
+//   })
+//   .catch(function (error) {
+//     // handle error
+//     // console.log(error);
+//   })
+//   .finally(function () {
+//     // always executed
+//   });
+// });
 
 
 // number of cpu or core available 
