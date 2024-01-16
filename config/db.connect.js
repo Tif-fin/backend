@@ -6,10 +6,11 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING,{
     autoIndex:true,
     
 }).then(()=>{
-    // console.log("Connection successful");
+     console.log("Connection successful");
 })
 .catch((err)=>{
-    // console.log("Connection failed");
+    console.log(err);
+    console.log("Connection failed");
 });
 }
 module.exports = connectDB
