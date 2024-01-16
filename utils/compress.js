@@ -10,7 +10,7 @@ const compressProfileAndSave =   (destination,filename)=>{
         fs.writeFileSync(path,res);
         return path
     }).catch((err)=>{
-        //console.log(err);
+        console.log(err);
         return null;
     })
 }
@@ -25,6 +25,7 @@ const compressImageAndSave = (destination,filename)=>{
         fs.writeFileSync(newFilePath,res)
         return newFilePath
     }).catch((err)=>{
+        console.log(err);
         return null;
     })
 }
