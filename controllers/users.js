@@ -134,7 +134,7 @@ class UserController {
                         expires:expire_at, 
                         httpOnly: true, // prevents JavaScript from accessing the cookie
                         // secure:secure || req.headers['x-forwarded-proto'] === 'https',
-                        sameSite: "none",
+                        // sameSite: "none",
                     }; 
                     //set token in the cookie
                     res.cookie('token',result.token,cookieOptions)
