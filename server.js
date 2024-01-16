@@ -61,7 +61,7 @@ app.use(cookieParser());
 
 //handle routes here 
 app.use(ipAddress);
-//app.use(TiffinAccessToken);
+app.use(TiffinAccessToken);
 app.get('/',rootRoute);
 app.get('/search',root_controller.search)
 app.use('/user',userRoute);
