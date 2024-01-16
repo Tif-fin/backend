@@ -132,8 +132,8 @@ class UserController {
                 const expire_at =  new Date(Date.now() + 1000 * 60 * 60 * 24*2)
                 const cookieOptions = {
                         expires:expire_at, 
-                        httpOnly: true, // prevents JavaScript from accessing the cookie
-                        secure:true,
+                        httpOnly: false, // prevents JavaScript from accessing the cookie
+                        secure:false,
                         sameSite: "none",
                     }; 
                     //set token in the cookie
