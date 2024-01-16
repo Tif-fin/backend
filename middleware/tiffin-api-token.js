@@ -11,4 +11,4 @@ const TiffinAccessToken = (req,res,next)=>{
 
 }
 
-module.exports = {TiffinAccessToken}
+module.exports = TiffinAccessToken
