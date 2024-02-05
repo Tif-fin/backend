@@ -54,8 +54,7 @@ class FSPController {
             // console.log(trusteduserfeature);
             if(!userId){
                 fsps = removeAttribute([fsps],['verification_histories',
-                    'verification_requests','employees','subscriptions','created_date','meta',
-                    'isVerified','isListing'
+                    'verification_requests','employees','subscriptions','created_date','meta'
                 ])
             }else{
                 switch (await fspService.checkPrivilege(userId)) {

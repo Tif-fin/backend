@@ -5,7 +5,7 @@ dotenv.config({
 const express = require("express");
 const app = express();
 const cluster = require("cluster");
-const  os = require("node:os");
+const  os = require("os");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -24,8 +24,6 @@ const { ipAddress } = require("./middleware/ip-address");
 const users = require("./controllers/users");
 const root_controller = require("./controllers/root_controller");
 // const schedule = require('node-schedule');
-// const axios = require('axios');
-const TiffinAccessToken = require("./middleware/tiffin-api-token");
 // schedule.scheduleJob('*/5 * * * *', function(){
 //     // console.log("Started");
 //     axios.get('https://tiffin-xoui.onrender.com/')
@@ -63,7 +61,7 @@ app.use(cookieParser());
 //handle routes here 
 app.use(ipAddress);
 app.use('/user',userRoute);
-app.use(TiffinAccessToken);
+// app.use(TiffinAccessToken);
 app.get('/',rootRoute);
 app.get('/search',root_controller.search)
 app.post('/login',users.authUser);
