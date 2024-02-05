@@ -23,6 +23,7 @@ const ValidationError = require("./exception/ValidateError");
 const { ipAddress } = require("./middleware/ip-address");
 const users = require("./controllers/users");
 const root_controller = require("./controllers/root_controller");
+const TiffinAccessToken = require("./middleware/tiffin-api-token");
 // const schedule = require('node-schedule');
 // schedule.scheduleJob('*/5 * * * *', function(){
 //     // console.log("Started");
@@ -61,7 +62,7 @@ app.use(cookieParser());
 //handle routes here 
 app.use(ipAddress);
 app.use('/user',userRoute);
-// app.use(TiffinAccessToken);
+app.use(TiffinAccessToken);
 app.get('/',rootRoute);
 app.get('/search',root_controller.search)
 app.post('/login',users.authUser);
