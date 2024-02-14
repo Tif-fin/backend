@@ -50,6 +50,8 @@ class FSPController {
             const {fspId} = req.query;
             const userId =req.user==undefined?undefined: req.user.userId; 
             let fsps = await fspService.getFSPById(fspId);
+            console.log(fspId);
+            const banners = await fspService.getBanner({fspId,userId:null});
             const trusteduserfeature = await fspService.getTrustedUserFeatureById({fspId});
             // console.log(trusteduserfeature);
             if(!userId){
@@ -67,7 +69,7 @@ class FSPController {
                     ])
                 }
             }
-          const data ={...fsps[0]._doc,trusteduserfeature}
+          const data ={...fsps[0]._doc,trusteduserfeature,banners}
         return res.status(200).json({success:true,data})
         } catch (error) {
             // console.log(error);

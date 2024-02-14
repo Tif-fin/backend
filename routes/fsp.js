@@ -1,4 +1,5 @@
 
+const BannerC = require("../controllers/banner.controller");
 const fspController = require("../controllers/fspController");
 const users = require("../controllers/users");
 const { AuthenticationToken } = require("../middleware/authToken");
@@ -17,6 +18,8 @@ app.patch('/emails',AuthenticationToken,fspController.updateEmail);
 app.patch('/geolocation',AuthenticationToken,fspController.updateGeolocation)
 app.get('/near',fspController.getnear)
 app.get('/trusted_user_feature',fspController.getFSPTrustedFeature)
+app.get('/banner',AuthenticationToken,BannerC.getBanner)
+app.post('/banner',AuthenticationToken,BannerC.createBanner)
 app.post('/trusted_user_feature',AuthenticationToken,fspController.createFSPTrustedFeature)
 app.post('/trusted_user_feature/request',AuthenticationToken,users.requestForVerifiedUser)
 app.patch('/trusted_user_feature',AuthenticationToken,fspController.updateFSPTrustedFeature)

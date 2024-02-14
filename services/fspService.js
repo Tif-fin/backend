@@ -1,3 +1,4 @@
+const Banner = require("../model/banner_model");
 const fsp = require("../model/fsp");
 const FSPTrustedUserFeature = require("../model/fsp_trusted_feature");
 const Order = require("../model/orders");
@@ -91,6 +92,19 @@ class FSPService{
             paymentMethod.push("Trusted User Credit")
         }
         return {paymentMethod,trusted_user}
+    }
+
+    async createBanner({userId,data}){
+        if(await this.checkPrivilege(userId)!=USERTYPE.MERCHANT){
+            throw new Error("Unauthrozied user")
+        }
+        return await new Banner({...data,userId}).save()
+    }
+    async getBanner({fspId,userId}){
+        if(userId!=null&&await this.checkPrivilege(userId)===USERTYPE.MERCHANT){
+            return await Banner.find({fspId})
+        }
+        return await Banner.find({fspId,endDate:{$gt:Date.now()}}).limit(7)
     }
     
 }
