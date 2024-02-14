@@ -104,7 +104,9 @@ class FSPService{
         if(userId!=null&&await this.checkPrivilege(userId)===USERTYPE.MERCHANT){
             return await Banner.find({fspId})
         }
-        return await Banner.find({fspId,endDate:{$gt:Date.now()}}).limit(7)
+        return await Banner.find({fspId,endDate:{$gt:Date.now()}}).sort({
+            created_date:-1
+        }).limit(7)
     }
     
 }
